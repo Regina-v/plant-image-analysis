@@ -1,13 +1,10 @@
 package de.bit.pl2.p3;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.WindowManager;
-import ij.io.FileSaver;
-import ij.plugin.ChannelSplitter;
-import ij.process.ImageProcessor;
-
+import ij.*;
+import ij.process.*;
+import ij.gui.*;
+import java.awt.*;
+import ij.plugin.*;
 import java.awt.*;
 
 
