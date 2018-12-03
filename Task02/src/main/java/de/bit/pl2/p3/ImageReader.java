@@ -19,7 +19,7 @@ public class ImageReader {
         File[] fileList = directory.listFiles();
         if (fileList != null) {
             for (File file : fileList) {
-                if (file.isFile() && file.getName().toLowerCase().endsWith("_rgb.png")) {// && !file.getName().startsWith("plant")) {
+                if (file.isFile() && file.getName().toLowerCase().endsWith("_rgb.png")) {
                     results.add(file);
                 }
             }
