@@ -21,7 +21,7 @@ public class App
         IJ.run(imp, "Median...", "radius=2");
         ImagePlus[] channels = ChannelSplitter.split(imp);
         ImagePlus green = channels[1];
-        ImageProcessor greenProcessor = green.getProcessor();
+
 
         IJ.run(green, "Auto Threshold", "method=Yen white");
         IJ.run(green, "Connected Components Labeling", "connectivity=4 type=[16 bits]");

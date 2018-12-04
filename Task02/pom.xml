@@ -16,6 +16,14 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
+
+  <repositories>
+    <repository>
+      <id>imagej.public</id>
+      <url>http://maven.imagej.net/content/groups/public</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -35,20 +43,15 @@
       <version>1.52i</version>
     </dependency>
     <dependency>
-      <groupId>sc.fiji</groupId>
-      <artifactId>fiji</artifactId>
-      <version>2.0.0-pre-7</version>
-    </dependency>
-    <dependency>
       <groupId>fr.inra.ijpb</groupId>
       <artifactId>MorphoLibJ_</artifactId>
       <version>1.4.0</version>
     </dependency>
-    <dependency>
-      <groupId>sc.fiji</groupId>
-      <artifactId>Auto_Threshold</artifactId>
-      <version>1.17.1</version>
-    </dependency>
+      <dependency>
+          <groupId>sc.fiji</groupId>
+          <artifactId>Auto_Threshold</artifactId>
+          <version>1.17.1</version>
+      </dependency>
   </dependencies>
 
   <build>
