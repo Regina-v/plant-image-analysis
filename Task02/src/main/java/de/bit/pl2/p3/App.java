@@ -21,7 +21,8 @@ public class App
         ImagePlus green = channels[1];
         ImageProcessor greenProcessor = green.getProcessor();
         IJ.run(green, "Auto Threshold", "method=Yen white");
-        IJ.run(green, "Connected Components Labeling", "connectivity=4 type=[16 bits]");
+
+        //ImageProcessor cclImg = IJ.run(green, "Connected Components Labeling", "connectivity=4 type=[16 bits]");
         System.out.println(WindowManager.getWindowCount());
         //todo this shows that there are no windows, that's why label get nullpointer error
 
