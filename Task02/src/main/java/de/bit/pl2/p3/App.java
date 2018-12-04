@@ -6,6 +6,8 @@ import ij.gui.*;
 import java.awt.*;
 import ij.plugin.*;
 import java.awt.*;
+import inra.ijpb.binary.BinaryImages;
+import fiji.threshold.Auto_Threshold;
 
 
 public class App 
@@ -20,11 +22,13 @@ public class App
         ImagePlus[] channels = ChannelSplitter.split(imp);
         ImagePlus green = channels[1];
         ImageProcessor greenProcessor = green.getProcessor();
-        IJ.run(green, "Auto Threshold", "method=Yen white");
 
-        //ImageProcessor cclImg = IJ.run(green, "Connected Components Labeling", "connectivity=4 type=[16 bits]");
-        System.out.println(WindowManager.getWindowCount());
-        //todo this shows that there are no windows, that's why label get nullpointer error
+        IJ.run(green, "Auto Threshold", "method=Yen white");
+        IJ.run(green, "Connected Components Labeling", "connectivity=4 type=[16 bits]");
+
+//        green.show();
+//        System.out.println(WindowManager.getWindowCount());
+//        //todo this shows that there are no windows, that's why label get nullpointer error
 
         ImagePlus label = WindowManager.getCurrentImage();
         ImageProcessor labelProcessor = label.getProcessor();
