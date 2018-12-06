@@ -8,11 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * todo add javadoc
- * 
- *
- */
+
 public class ImageReader {
     public List<File> filterFolder(File directory) {
         List<File> results = new ArrayList<>();
