@@ -9,6 +9,7 @@ import java.util.List;
 public class App {
     public static void main(String[] args) {
         // todo argparse
+        boolean output = false;
         String path = "C:\\Users\\regin\\Desktop\\testset";
         File folder = new File(path);
 
@@ -16,10 +17,17 @@ public class App {
         List<ImagePlus> imageList = imageReader.readFilesFromFolder(folder);
 
         ObjectFinder objectFinder = new ObjectFinder();
-        List<ImagePlus> objectList = objectFinder.parseList(imageList);
+        List<ImagePlus> objectList = objectFinder.parseList(imageList, output);
 
-        ImageSaver imageSaver = new ImageSaver();
-        imageSaver.saveColorLabel(objectList, folder);
+        if (output) {
+            ImageSaver imageSaver = new ImageSaver();
+            imageSaver.saveColorLabel(objectList, folder);
+        }
+        else {
+            for (ImagePlus imp : objectList) {
+                imp.show();
+            }
+        }
     }
 
 }

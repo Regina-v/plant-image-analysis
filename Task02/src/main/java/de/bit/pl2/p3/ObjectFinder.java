@@ -14,16 +14,16 @@ import java.util.List;
 
 public class ObjectFinder {
 
-    public List<ImagePlus> parseList(List<ImagePlus> imageList) {
+    public List<ImagePlus> parseList(List<ImagePlus> imageList, boolean output) {
         List<ImagePlus> resultList = new ArrayList<>();
         for (ImagePlus image : imageList) {
-            ImagePlus res = findObjects(image);
+            ImagePlus res = findObjects(image, output);
             resultList.add(res);
         }
         return resultList;
     }
 
-    private ImagePlus findObjects(ImagePlus imp) {
+    private ImagePlus findObjects(ImagePlus imp, boolean output) {
         // apply median filter to reduce noise
         ImageProcessor impProcessor = imp.getProcessor();
         IJ.run(imp, "Median...", "radius=2");
@@ -44,15 +44,22 @@ public class ObjectFinder {
         // keep largest label todo not best solution
         ImagePlus largestLabel = BinaryImages.keepLargestRegion(componentLabel);
         largestLabel.setTitle(componentLabel.getShortTitle() + "-largest");
+        ImagePlus resPlus;
 
-        // distance transform watershed
-        ImageProcessor largestLabelProcessor = largestLabel.getProcessor();
-        ImageProcessor dist = BinaryImages.distanceMap(largestLabelProcessor, new float[]{1, (float) Math.sqrt(2)}, true);
-        dist.invert();
+        if (output) {
+            // distance transform watershed to get greyscale labels
+            ImageProcessor largestLabelProcessor = largestLabel.getProcessor();
+            ImageProcessor dist = BinaryImages.distanceMap(largestLabelProcessor, new float[]{1, (float) Math.sqrt(2)}, true);
+            dist.invert();
 
-        ImageProcessor watershedProcessor = ExtendedMinimaWatershed.extendedMinimaWatershed(dist, largestLabelProcessor, 1, 4, 32, false);
-        ImagePlus resPlus = new ImagePlus(largestLabel.getShortTitle() + "-dist-watershed", watershedProcessor);
-        resPlus.copyScale(largestLabel);
+            ImageProcessor watershedProcessor = ExtendedMinimaWatershed.extendedMinimaWatershed(dist, largestLabelProcessor, 1, 4, 32, false);
+            resPlus = new ImagePlus(largestLabel.getShortTitle() + "-dist-watershed", watershedProcessor);
+            resPlus.copyScale(largestLabel);
+        } else {
+            // distance transform watershed with binary output
+            resPlus = largestLabel.duplicate();
+            IJ.run(resPlus,"Watershed", "only");
+        }
 
         return resPlus;
     }
