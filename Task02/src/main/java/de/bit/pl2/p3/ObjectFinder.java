@@ -7,6 +7,7 @@ import ij.plugin.ChannelSplitter;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.plugins.DistanceTransformWatershed;
+import inra.ijpb.watershed.ExtendedMinimaWatershed;
 
 
 public class ObjectFinder {
@@ -31,8 +32,20 @@ public class ObjectFinder {
 
         // keep largest label todo not best solution
         ImagePlus largestLabel = BinaryImages.keepLargestRegion(componentLabel);
-        
-//        IJ.run(label, "Distance Transform Watershed", "distances=[Quasi-Euclidean (1,1.41)] output=[32 bits] normalize dynamic=1 connectivity=4");
+
+        // distance transform watershed
+        DistanceTransformWatershed distanceTransformWatershed = new DistanceTransformWatershed();
+        ImageProcessor largestLabelProcessor = largestLabel.getProcessor();
+
+        ImageProcessor dist = BinaryImages.distanceMap( largestLabelProcessor, new float[] {1, (float) Math.sqrt(2) }, true );
+        dist.invert();
+
+        ImageProcessor watershedProcessor = ExtendedMinimaWatershed.extendedMinimaWatershed(dist, largestLabelProcessor, 1, 4, 32, false );
+        ImagePlus resPlus = new ImagePlus(largestLabel.getShortTitle()+"-dist-watershed", watershedProcessor);
+        resPlus.copyScale(largestLabel);
+        resPlus.show();
+
+        // for later analysis this step is not needed, only for output
 //        IJ.run(label, "Labels To RGB", "colormap=[Mixed Colors] background=Black shuffle");
     }
 }
