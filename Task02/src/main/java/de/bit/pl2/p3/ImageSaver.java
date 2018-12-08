@@ -24,7 +24,7 @@ public class ImageSaver {
             fs.saveAsPng(String.valueOf(path));
         }
 
-        // for later: store in separate output folder
+        // todo for later: store in separate output folder
 //        File parentFolder = folder.getParentFile();
 //        try {
 //            Path output = Paths.get(parentFolder.toString(), "output");

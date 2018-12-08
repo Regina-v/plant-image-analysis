@@ -7,6 +7,7 @@ import ij.plugin.ChannelSplitter;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
+import inra.ijpb.plugins.DistanceTransformWatershed;
 
 import java.util.ArrayList;
 import java.util.List;
