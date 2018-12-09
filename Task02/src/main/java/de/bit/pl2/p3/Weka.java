@@ -3,37 +3,31 @@ package de.bit.pl2.p3;
 import hr.irb.fastRandomForest.FastRandomForest;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.io.FileSaver;
 import ij.process.ImageConverter;
 import trainableSegmentation.WekaSegmentation;
 import trainableSegmentation.utils.Utils;
-import weka.classifiers.meta.RandomSubSpace;
 
-import java.awt.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Weka {
-    public Weka() {
-
+    public WekaSegmentation trainClassifier(ImagePlus image, ImagePlus labels) {
+        System.out.println("***** Start training *****");
         // starting time
         Long startTime = System.currentTimeMillis();
-
-        // read in images
-        ImagePlus image = new ImagePlus("C:\\Users\\regin\\Desktop\\plant015_rgb.png");
-        ImagePlus labels = new ImagePlus("C:\\Users\\regin\\Desktop\\plant015_fg.png");
-        ImagePlus testImage = new ImagePlus("C:\\Users\\regin\\Desktop\\plant010_rgb.png");
 
         // create Weka segmentator
         WekaSegmentation seg = new WekaSegmentation(image);
 
         // classifier
-        //RandomSubSpace rss = new RandomSubSpace();
-        FastRandomForest rf = new FastRandomForest();  // in first tests, performs better than RandomSubSpace
+        FastRandomForest rf = new FastRandomForest();
 
         // set classifier
         seg.setClassifier(rf);
 
         // update classLabel
-        seg.setClassLabels(new String[] {"background", "plant"});
+        seg.setClassLabels(new String[]{"background", "plant"});
 
         // selected attributes (image features)
         boolean[] enableFeatures = new boolean[]{
@@ -68,27 +62,62 @@ public class Weka {
         // train classifier
         seg.trainClassifier();
 
-        // apply trained classifier to test image and get probabilities
-        ImagePlus result = seg.applyClassifier( testImage, 0, false );
-
-        // assign same LUT as in GUI
-        result.setLut( Utils.getGoldenAngleLUT() );
-        ImageConverter imageConverter = new ImageConverter(result);
-        imageConverter.convertToGray8();
-        result.updateImage();
-        IJ.run(result, "Make Binary", "white");
-        IJ.run(result, "Invert", "");
-
         // save stuff
-        seg.saveClassifier( "C:\\Users\\regin\\Desktop\\classifier.model" );
-        seg.saveData( "C:\\Users\\regin\\Desktop\\data.arff" );
-        FileSaver fs = new FileSaver(result);
-        fs.saveAsPng("C:\\Users\\regin\\Desktop\\" + result.getTitle() + ".png");
+        // note hardcoded stuff
+        seg.saveClassifier("C:\\Users\\regin\\Desktop\\classifier.model");
+        seg.saveData("C:\\Users\\regin\\Desktop\\data.arff");
 
         // print elapsed time
         Long estimatedTime = System.currentTimeMillis() - startTime;
         System.out.println(estimatedTime);
-        result.show();
 
+        return seg;
+    }
+
+    public List<ImagePlus> applyClassifier(List<ImagePlus> imageList, String path) {
+        WekaSegmentation seg = new WekaSegmentation();
+        boolean loaded = seg.loadClassifier(path);
+        if (loaded) {System.out.println("***** Classifier loaded *****");}
+        else if (!loaded) {System.out.println("***** Can't load classifier *****"); }
+        return applyClassifier(imageList, seg);
+    }
+
+    public List<ImagePlus> applyClassifier(List<ImagePlus> imageList, WekaSegmentation seg) {
+        System.out.println("***** Apply classifier to folder *****");
+        List<ImagePlus> resultList = new ArrayList<>();
+
+        // starting time
+        Long startTime = System.currentTimeMillis();
+
+        // iterate over imageList
+        for (ImagePlus img : imageList) {
+            // apply classifier and get results (0 indicates number of threads is auto-detected)
+            ImagePlus result = seg.applyClassifier(img, 0, false);
+            result.setLut(Utils.getGoldenAngleLUT());
+            // convert from red/green to grayscale
+            ImageConverter imageConverter = new ImageConverter(result);
+            imageConverter.convertToGray8();
+            result.updateImage();
+            // get B&W image
+            IJ.run(result, "Make Binary", "white");
+            // get white background (needed for particle analyzer)
+            IJ.run(result, "Invert", "");
+            // apply median filter with 2 pixel radius to get rid of artifacts
+            IJ.run(result, "Median...", "radius=2");
+            result.setTitle(img.getTitle() + "_class");
+            resultList.add(result);
+        }
+
+        // print elapsed time
+        Long estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println(estimatedTime);
+
+        return resultList;
+    }
+
+    public List<ImagePlus> applyClassifier(List<ImagePlus> imageList) {
+        File segFile = new File(this.getClass().getResource("/classifier.model").getPath());
+        String segString = segFile.toString();
+        return applyClassifier(imageList, segString);
     }
 }

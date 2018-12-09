@@ -24,6 +24,7 @@ public class ImageReader {
     }
 
     public List<ImagePlus> readFilesFromFolder(File folder) {
+        System.out.println("***** Read in files *****");
         List<ImagePlus> imageList = new ArrayList<>();
         try {
             List<File> fileList = filterFolder(folder);
@@ -37,6 +38,7 @@ public class ImageReader {
         } catch (IOException e) {
             e.getStackTrace();
         }
+        System.out.println("***** Files successfully loaded ****");
         return imageList;
     }
 }

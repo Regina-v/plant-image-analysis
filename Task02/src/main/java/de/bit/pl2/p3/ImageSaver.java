@@ -9,15 +9,25 @@ import inra.ijpb.util.CommonColors;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 public class ImageSaver {
+    public void saveLabels(List<ImagePlus> imageList, File outputDir) {
+        System.out.println("***** Saving images to " + outputDir.toString() + " *****");
+        if (!outputDir.exists()) {
+            outputDir.mkdir();
+        }
+        for (ImagePlus image : imageList) {
+            FileSaver fs = new FileSaver(image);
+            Path path = Paths.get(outputDir.toString(), image.getShortTitle() + "_label.png");
+            fs.saveAsPng(String.valueOf(path));
+        }
+    }
+
     public void saveColorLabel(List<ImagePlus> imageList, File folder) {
-         for (ImagePlus image : imageList) {
+        for (ImagePlus image : imageList) {
             ImagePlus label = labelToRGB(image);
             FileSaver fs = new FileSaver(label);
             Path path = Paths.get(folder.toString(), image.getShortTitle() + ".png");
