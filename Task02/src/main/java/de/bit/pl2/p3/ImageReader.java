@@ -10,6 +10,11 @@ import java.util.List;
 
 
 public class ImageReader {
+    /**
+     * Filters a folder for files ending with "_rgb.png"
+     * @param directory folder with images
+     * @return file list which contains all files ending with "_rgb.png"
+     */
     public List<File> filterFolder(File directory) {
         List<File> results = new ArrayList<>();
         File[] fileList = directory.listFiles();
@@ -23,6 +28,11 @@ public class ImageReader {
         return results;
     }
 
+    /**
+     * Folters a filter for files ending with "_rgb.png" and reads Images into a List.
+     * @param folder folder with images
+     * @return ImageList with ImagePlus instances of the files
+     */
     public List<ImagePlus> readFilesFromFolder(File folder) {
         System.out.println("***** Read in files *****");
         List<ImagePlus> imageList = new ArrayList<>();

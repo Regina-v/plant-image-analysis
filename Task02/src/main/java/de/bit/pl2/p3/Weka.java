@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Weka {
+    /**
+     * Train a WekaSegmentation classifier with a pair of image/binary labels.
+     * Uses FastRandomForest with default parameters and training features.
+     * @param image training RGB image
+     * @param labels training binary image
+     * @return trained WegaSegmentation instance
+     */
     public WekaSegmentation trainClassifier(ImagePlus image, ImagePlus labels) {
         System.out.println("***** Start training *****");
         // starting time
@@ -74,6 +81,13 @@ public class Weka {
         return seg;
     }
 
+    /**
+     * Applies a trained classifier to a list of RGB images.
+     * Loads a classifier from a .model file
+     * @param imageList input list with RGB images
+     * @param path path to trained Weka Segmentation classifier
+     * @return classifiedImageList
+     */
     public List<ImagePlus> applyClassifier(List<ImagePlus> imageList, String path) {
         WekaSegmentation seg = new WekaSegmentation();
         boolean loaded = seg.loadClassifier(path);
@@ -82,6 +96,12 @@ public class Weka {
         return applyClassifier(imageList, seg);
     }
 
+    /**
+     * Applies a trained classifier to a list of RGB images.
+     * @param imageList input list with RGB images
+     * @param seg instance of trained WekaSegmentation
+     * @return classifiedImageList
+     */
     public List<ImagePlus> applyClassifier(List<ImagePlus> imageList, WekaSegmentation seg) {
         System.out.println("***** Apply classifier to folder *****");
         List<ImagePlus> resultList = new ArrayList<>();
@@ -100,11 +120,9 @@ public class Weka {
             result.updateImage();
             // get B&W image
             IJ.run(result, "Make Binary", "white");
-            // get white background (needed for particle analyzer)
-            IJ.run(result, "Invert", "");
             // apply median filter with 2 pixel radius to get rid of artifacts
             IJ.run(result, "Median...", "radius=2");
-            result.setTitle(img.getTitle() + "_class");
+            result.setTitle(img.getShortTitle() + "_class");
             resultList.add(result);
         }
 
@@ -115,6 +133,12 @@ public class Weka {
         return resultList;
     }
 
+    /**
+     * Applies a trained classifier to a list of RGB images.
+     * Automatically grabs the classifier from resources.
+     * @param imageList input list with RGB images
+     * @return classifiedImageList
+     */
     public List<ImagePlus> applyClassifier(List<ImagePlus> imageList) {
         File segFile = new File(this.getClass().getResource("/classifier.model").getPath());
         String segString = segFile.toString();
