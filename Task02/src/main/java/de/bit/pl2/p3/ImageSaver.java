@@ -17,7 +17,7 @@ public class ImageSaver {
     /**
      * Saves all images from an imageList as png files in the given output folder.
      * @param imageList list of ImagePlus objects
-     * @param outputDir ourput folder
+     * @param outputDir output folder
      */
     public void saveImages(List<ImagePlus> imageList, File outputDir) {
         System.out.println("***** Saving images to " + outputDir.toString() + " *****");

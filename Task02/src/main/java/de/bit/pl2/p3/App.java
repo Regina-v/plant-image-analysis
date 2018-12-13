@@ -8,8 +8,8 @@ import java.util.List;
 public class App {
     public static void main(String[] args) {
         // note all that naughty hardcoded stuff that needs to be changed into CLI in the end
-        String inputDir = "C:\\Users\\regin\\Desktop\\testset";
-        String outputDir = "C:\\Users\\regin\\Desktop\\output";
+        String inputDir = "C:\\Users\\regin\\Desktop\\2017\\A2";
+        String outputDir = "C:\\Users\\regin\\Desktop\\outputA2";
 
         // read images from a folder and store as ImagePlus objects in List
         ImageReader imageReader = new ImageReader();
@@ -20,11 +20,11 @@ public class App {
         List<ImagePlus> resultList = weka.applyClassifier(imageList);
 
         // find objects with watershed
-        ObjectFinder objectFinder = new ObjectFinder();
-        List<ImagePlus> objectList = objectFinder.parseList(resultList);
+//        ObjectFinder objectFinder = new ObjectFinder();
+//        List<ImagePlus> objectList = objectFinder.parseList(resultList);
 
         // save images
         ImageSaver imageSaver = new ImageSaver();
-        imageSaver.saveImages(objectList, new File(outputDir));
+        imageSaver.saveImages(resultList, new File(outputDir));
     }
 }
