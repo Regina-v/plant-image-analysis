@@ -20,10 +20,22 @@ public class ObjectFinder {
         System.out.println("***** Compute Watershed *****");
         List<ImagePlus> resultList = new ArrayList<>();
         for (ImagePlus image : imageList) {
-            ImagePlus res = findObjects(image);
+            ImagePlus temp = removeOutliers(image);
+            ImagePlus res = findObjects(temp);
             resultList.add(res);
         }
         return resultList;
+    }
+
+    /**
+     * Applies ImageJ's Remove Outliers (selective median filter) function to input image
+     * @param input ImagePlus input
+     * @return ImagePlus output
+     */
+    public ImagePlus removeOutliers(ImagePlus input) {
+        IJ.run(input, "Remove Outliers...", "radius=6 threshold=50 which=Dark");
+        IJ.run(input, "Remove Outliers...", "radius=6 threshold=50 which=Bright");
+        return input;
     }
 
     /**
