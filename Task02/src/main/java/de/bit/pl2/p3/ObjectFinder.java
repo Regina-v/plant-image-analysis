@@ -6,6 +6,8 @@ import ij.ImagePlus;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.strip;
+
 
 public class ObjectFinder {
 
@@ -57,7 +59,9 @@ public class ObjectFinder {
         // watershed with binary output
         ImagePlus resPlus = inputPlus.duplicate();
         IJ.run(resPlus, "Watershed", "only");
-        resPlus.setTitle(resPlus.getShortTitle() + "_watershed");
+        String shortTitle = resPlus.getShortTitle();
+        String DUPremoved = strip(shortTitle, "DUP_");
+        resPlus.setTitle(DUPremoved + "_watershed");
         return resPlus;
     }
 }

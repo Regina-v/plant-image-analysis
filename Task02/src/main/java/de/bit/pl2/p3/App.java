@@ -8,7 +8,7 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        // note all that naughty hardcoded stuff that needs to be changed into CLI in the end
+        // note all that hardcoded stuff needs to be changed into CLI in the end
         //String inputDir = "C:\\Users\\regin\\Desktop\\2017\\A2";
         //String outputDir = "C:\\Users\\regin\\Desktop\\outputA1_";
         String[] input = new String[] {"C:\\Users\\regin\\Desktop\\2017\\A1", "C:\\Users\\regin\\Desktop\\2017\\A2"};
@@ -18,7 +18,7 @@ public class App {
         for (int i = 0; i < 2; i++) {
             // read images from a folder and store as ImagePlus objects in List
             ImageReader imageReader = new ImageReader();
-            List<ImagePlus> imageList = imageReader.readFilesFromFolder(new File(classOutput[i]));
+            List<ImagePlus> imageList = imageReader.readFilesFromFolder(new File(input[i]));
 
             // apply Weka (from resources) classifier to images in list
             WekaSeg weka = new WekaSeg();
