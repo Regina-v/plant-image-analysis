@@ -11,10 +11,20 @@ public class App {
         // note all that hardcoded stuff needs to be changed into CLI in the end
         //String inputDir = "C:\\Users\\regin\\Desktop\\2017\\A2";
         //String outputDir = "C:\\Users\\regin\\Desktop\\outputA1_";
-        String[] input = new String[] {"C:\\Users\\regin\\Desktop\\2017\\A1", "C:\\Users\\regin\\Desktop\\2017\\A2"};
-        String[] classOutput = new String[] {"C:\\Users\\regin\\Desktop\\outputA1_class", "C:\\Users\\regin\\Desktop\\outputA2_class"};
-        String[] objectOutput = new String[] {"C:\\Users\\regin\\Desktop\\outputA1_objects", "C:\\Users\\regin\\Desktop\\outputA2_objects"};
-
+    	//Regina's path
+        //String[] input = new String[] {"C:\\Users\\regin\\Desktop\\2017\\A1", "C:\\Users\\regin\\Desktop\\2017\\A2"};
+        //String[] classOutput = new String[] {"C:\\Users\\regin\\Desktop\\outputA1_class", "C:\\Users\\regin\\Desktop\\outputA2_class"};
+        //String[] objectOutput = new String[] {"C:\\Users\\regin\\Desktop\\outputA1_objects", "C:\\Users\\regin\\Desktop\\outputA2_objects"};
+        
+        //Francel's path
+        String[] input = new String[] {"C:\\Users\\Spokie\\Documents\\Plant_project\\A1", "C:\\Users\\Spokie\\Documents\\Plant_project\\A2"};
+        String[] classOutput = new String[] {"C:\\Users\\Spokie\\Documents\\Plant_project\\outputA1_class", "C:\\Users\\Spokie\\Documents\\Plant_project\\outputA2_class"};
+        String[] objectOutput = new String[] {"C:\\Users\\Spokie\\Documents\\Plant_project\\outputA1_objects", "C:\\Users\\Spokie\\Documents\\Plant_project\\outputA2_objects"};
+        
+        //String[] input = new String[] {"C:\\Users\\Spokie\\Documents\\Plant_project\\Test"};
+        //String[] classOutput = new String[] {"C:\\Users\\Spokie\\Documents\\Plant_project\\output_test_class"};
+        //String[] objectOutput = new String[] {"C:\\Users\\Spokie\\Documents\\Plant_project\\output_test_object"};
+        
         for (int i = 0; i < 2; i++) {
             // read images from a folder and store as ImagePlus objects in List
             ImageReader imageReader = new ImageReader();
@@ -26,7 +36,7 @@ public class App {
 
             // find objects with watershed
             ObjectFinder objectFinder = new ObjectFinder();
-            List<ImagePlus> objectList = objectFinder.parseList(imageList);
+            List<ImagePlus> objectList = objectFinder.parseList(resultList);
 
             // save images
             ImageSaver imageSaver = new ImageSaver();

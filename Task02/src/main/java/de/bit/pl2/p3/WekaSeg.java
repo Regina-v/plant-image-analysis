@@ -1,6 +1,7 @@
 package de.bit.pl2.p3;
 
 import hr.irb.fastRandomForest.FastRandomForest;
+import ij.Prefs;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
@@ -109,17 +110,27 @@ public class WekaSeg {
         // starting time
         Long startTime = System.currentTimeMillis();
 
+              
         // iterate over imageList
         for (ImagePlus img : imageList) {
             // apply classifier and get results (0 indicates number of threads is auto-detected)
             ImagePlus result = seg.applyClassifier(img, 0, false);
+            //result.show();
             result.setLut(Utils.getGoldenAngleLUT());
+            
+            //result.show();
+            
             // convert from red/green to grayscale
             ImageConverter imageConverter = new ImageConverter(result);
             imageConverter.convertToGray8();
             result.updateImage();
+            //result.show();
             // get B&W image
+            IJ.run(result, "Convert to Mask", "Black Background");
+            Prefs.blackBackground = true ;
             IJ.run(result, "Make Binary", "white");
+            
+            result.show();
             result.setTitle(img.getShortTitle() + "_class");
             resultList.add(result);
         }
