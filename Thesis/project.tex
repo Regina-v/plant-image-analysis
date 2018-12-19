@@ -26,6 +26,29 @@
 
 \usepackage[hidelinks]{hyperref} % linked pdf, necessarily at the end of preamble!!!
 
+%##########################################################
+%###################### Help! #############################
+%##########################################################
+% 
+% Strg+T to comment a block
+% 
+% \citet --> Mustermann et al. (2042)
+% \citet* --> Mustermann, Musterfrau and Musterkind (2042)
+% \citep --> (Mustermann et al. 2042)
+% \citep* --> (Mustermann, Musterfrau and Musterkind 2042)
+% 
+% Insert a picture called xxx.png which is stored in the folder pic as a png
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=13cm]{pic/xxx}
+%	\caption[Short Title]{Caption insert here}
+%	\label{fig:somelabelname}
+%\end{figure}
+%
+%##########################################################
+%########### End Preferences, Begin Document ##############
+%##########################################################
+
 %opening
 \title{Programming Project 03}
 \author{Francèl Lamprecht, Christine Robinson, Regina Wehler}
@@ -37,17 +60,33 @@
 
 \tableofcontents
 \clearpage
-\section{Chapter1Title} 
-\subsection{Chapter1.1Title}
+\section{Introduction}
+This is a dummy sentence that shows how citations work \citep{Adams.2018}.
 
 
+\section{Methodology}
+Short overview of the pipeline.
 
-% Insert a picture called xxx.png which is stored in the folder pic as a png
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=13cm]{pic/xxx}
-%	\caption[Short Title]{Caption insert here}
-%	\label{fig:somelabelname}
-%\end{figure}
+\subsection{Segmentation}
+Trainable Weka stuff
+
+\subsection{Object Recognition}
+Watershed 
+
+\subsection{Object Analysis}
+Particle Analyzer and additional stuff until csv export
+
+\subsection{Explorative Data Analysis}
+Everything in Python
+
+\section{Results}
+
+
+\section{Discussion \& Outlook}
+
+
+\renewcommand\bibname{References} % necessarily before \bibliography{ref}, but not working in preamble
+\bibliographystyle{apalike} % for references chapter
+\bibliography{ref}
 
 \end{document}
