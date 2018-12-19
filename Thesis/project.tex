@@ -1,0 +1,53 @@
+\documentclass[paper=A4,bibliography=totocnumbered]{scrartcl}
+\setkomafont{disposition}{\normalcolor\bfseries} %in KOMA headings are default sans serif, with this patch with serifs see scrguide.pdf, 2010-09-14, page 108
+\usepackage[dvipsnames]{xcolor}
+\usepackage[latin1]{inputenc} % correct coding for windows e.g. with umlauts
+\usepackage[T1]{fontenc}
+\usepackage{paralist} % compactenum and compactitem
+\usepackage[pdftex]{graphicx} % required to insert figures
+\usepackage{listings} % format code
+\lstset{escapeinside={<@}{@>}}
+\usepackage[margin=10pt,font=small,labelfont=bf,labelsep=endash,singlelinecheck=false,format=plain]{caption} % formatting of captions
+\usepackage{booktabs} %for professional tables using \toprule, \midrule, \bottomrule
+\usepackage[round]{natbib} % http://merkel.zoneo.net/Latex/natbib.php for author-year citation with round brackets
+\usepackage{vmargin} % for margins, especially bottommargin smaller, alternative to DIV=12
+\setmarginsrb{35mm}{20mm}{25mm}{15mm}{12pt}{11mm}{0pt}{11mm}
+
+% math packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{centernot}
+\usepackage{leftidx}
+
+% set up chapter depths
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\usepackage[hidelinks]{hyperref} % linked pdf, necessarily at the end of preamble!!!
+
+%opening
+\title{Programming Project 03}
+\author{Francèl Lamprecht, Christine Robinson, Regina Wehler}
+\date{Winter Semester 2018/19}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\clearpage
+\section{Chapter1Title} 
+\subsection{Chapter1.1Title}
+
+
+
+% Insert a picture called xxx.png which is stored in the folder pic as a png
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=13cm]{pic/xxx}
+%	\caption[Short Title]{Caption insert here}
+%	\label{fig:somelabelname}
+%\end{figure}
+
+\end{document}
