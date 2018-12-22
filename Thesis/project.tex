@@ -23,14 +23,14 @@
 \newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
-
+\usepackage{subfig}
 \usepackage[hidelinks]{hyperref} % linked pdf, necessarily at the end of preamble!!!
 
 %##########################################################
 %###################### Help! #############################
 %##########################################################
 % 
-% Strg+T to comment a block
+% Strg+T to comment a block 
 % 
 % \citet --> Mustermann et al. (2042)
 % \citet* --> Mustermann, Musterfrau and Musterkind (2042)
@@ -65,6 +65,20 @@ This is a dummy sentence that shows how citations work \citep{Adams.2018}.
 
 
 \section{Methodology}
+
+\begin{figure}
+	\centering
+	\subfloat[Input]{\includegraphics[width=.3\textwidth]{pic/27_rgb}}
+	\qquad
+	\subfloat[Classification]{\includegraphics[width=.3\textwidth]{pic/27_class}}
+	\qquad
+	\subfloat[Watershed]{\includegraphics[width=.3\textwidth]{pic/27_watershed}}
+	\qquad
+	\subfloat[Particle Analysis]{\includegraphics[width=.3\textwidth]{pic/27_greenPA}}
+	\caption[Image analysis pipeline]{The analysis of plant leaves is conducted in three steps. The RGB input image (a) is classified into plant and background by a trainable Weka segmentation classifier (b). Single leaf objects are identified by watershed segmentation (c). The binary mask is used to analyze properties in the splitted red, green and blue channel (d).}
+	\label{fig:pipeline}
+\end{figure}
+
 Short overview of the pipeline.
 
 \subsection{Segmentation}
