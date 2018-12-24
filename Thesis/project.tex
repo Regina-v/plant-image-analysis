@@ -65,6 +65,7 @@ This is a dummy sentence that shows how citations work \citep{Adams.2018}.
 
 
 \section{Methodology}
+The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two class, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
 
 \begin{figure}
 	\centering
@@ -75,14 +76,32 @@ This is a dummy sentence that shows how citations work \citep{Adams.2018}.
 	\subfloat[Watershed]{\includegraphics[width=.3\textwidth]{pic/27_watershed}}
 	\qquad
 	\subfloat[Particle Analysis]{\includegraphics[width=.3\textwidth]{pic/27_greenPA}}
-	\caption[Image analysis pipeline]{The analysis of plant leaves is conducted in three steps. The RGB input image (a) is classified into plant and background by a trainable Weka segmentation classifier (b). Single leaf objects are identified by watershed segmentation (c). The binary mask is used to analyze properties in the splitted red, green and blue channel (d).}
+	\caption[Image analysis pipeline]{The analysis of plant leaves is conducted in three steps. The RGB input image (a) is classified into plant and background by a trainable Weka segmentation classifier (b). Single leaf objects are identified by watershed segmentation (c). The binary mask is used to analyze properties in the split red, green and blue channel (d).}
 	\label{fig:pipeline}
 \end{figure}
 
-Short overview of the pipeline.
-
 \subsection{Segmentation}
-Trainable Weka stuff
+The plant is separated from the background with the help of a trainable Weka segmentation classifier, which is available as a plugin for Fiji. The trainable Weka segmentation provides a GUI to train machine learning algorithms to produce pixel-based segmentations. The user can add traces to classes and after classifier training, traces/regions of interest can be adjusted to improve classification. Six representative pictures are selected from the 2017 data set to train the classifier (plant029, plant145 and plant159 from A1; plant032, plant034 and plant037 from A2). Pictures are chosen to cover the whole range of plant green shades and the range of background characteristics. The Weka Experimenter was used to assess the performance of different machine learning algorithms. Based on these results (table \ref{tab:weka}), FastRandomForest was used as a classifier. 
+
+\begin{table}[htbp]
+	\centering
+	\caption{Comparison of classifier performance by Weka Experimenter. The default algorithm parameters were kept.}
+	\begin{tabular}{lllllll}
+		\toprule
+		Algorithm & Percent correct & Precision & Recall & F score & Matthews  & AUC \\
+		 & & & & & correlation & \\
+		 \midrule
+		FastRandomForest & 99.93 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+		SMO   & 92.52 & 0.89 & 0.93 & 0.91 & 0.85 & 0.93 \\
+		$k$-nearest Neighbors   & 95.38 & 0.95 & 0.93 & 0.94 & 0.90 & 0.95 \\
+		RandomSubSpace & 99.85 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+		Bagging & 99.77 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+		DesicisonTable & 99.05 & 0.99 & 0.9 & 0.99 & 0.98 & 1.00 \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:weka}
+\end{table}
+
 
 \subsection{Object Recognition}
 Watershed 
