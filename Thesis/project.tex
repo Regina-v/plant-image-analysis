@@ -81,7 +81,7 @@ The image analysis approach consists of three main steps (figure \ref{fig:pipeli
 \end{figure}
 
 \subsection{Segmentation}
-The plant is separated from the background with the help of a trainable Weka segmentation classifier, which is available as a plugin for Fiji. The trainable Weka segmentation provides a GUI to train machine learning algorithms to produce pixel-based segmentations. The user can add traces to classes and after classifier training, traces/regions of interest can be adjusted to improve classification. Six representative pictures are selected from the 2017 data set to train the classifier (plant029, plant145 and plant159 from A1; plant032, plant034 and plant037 from A2). Pictures are chosen to cover the whole range of plant green shades and the range of background characteristics. The Weka Experimenter was used to assess the performance of different machine learning algorithms. Based on these results (table \ref{tab:weka}), FastRandomForest was used as a classifier. 
+The plant is separated from the background with the help of a trainable Weka segmentation classifier, which is available as a plugin for Fiji. Weka provides a GUI to train machine learning algorithms to produce pixel-based segmentations. The user can add traces to classes and train the classifier with those. Afterwards, traces/regions of interest can be adjusted and the classifier can be re-trained to improve classification. Six representative pictures are selected from the 2017 data set for training (plant029, plant145 and plant159 from A1; plant032, plant034 and plant037 from A2). Pictures are chosen to cover the whole range of plant green shades and the range of background characteristics of the given data sets. The Weka Experimenter was used to assess the performance of different machine learning algorithms. Based on these results (table \ref{tab:weka}), FastRandomForest was used as a classifier. By applying the trained classifier to the RGB input images, for each input image a binary classification image is obtained (figure \ref{fig:pipeline}-b). 
 
 \begin{table}[htbp]
 	\centering
@@ -92,8 +92,8 @@ The plant is separated from the background with the help of a trainable Weka seg
 		 & & & & & correlation & \\
 		 \midrule
 		FastRandomForest & 99.93 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
-		SMO   & 92.52 & 0.89 & 0.93 & 0.91 & 0.85 & 0.93 \\
-		$k$-nearest Neighbors   & 95.38 & 0.95 & 0.93 & 0.94 & 0.90 & 0.95 \\
+		SMO & 92.52 & 0.89 & 0.93 & 0.91 & 0.85 & 0.93 \\
+		$k$-nearest Neighbors & 95.38 & 0.95 & 0.93 & 0.94 & 0.90 & 0.95 \\
 		RandomSubSpace & 99.85 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
 		Bagging & 99.77 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
 		DesicisonTable & 99.05 & 0.99 & 0.9 & 0.99 & 0.98 & 1.00 \\
@@ -102,9 +102,8 @@ The plant is separated from the background with the help of a trainable Weka seg
 	\label{tab:weka}
 \end{table}
 
-
-\subsection{Object Recognition}
-Watershed 
+\subsection{Objects Recognition}
+A plant consists of leaves that are attached to each other. To be able to analyze leaves individually, they need to be separated. Here, the watershed algorithm was used to separate touching objects. The algorithm first calculates an Euclidean distance map and determines center points as points which are, from a topological view, the ultimate eroded points, As the algorithm's name indicates, this topological map is "flooded" with water and at each collision of two "watersheds", a line separating two objects is drawn. The output of the algorithm is the binary image with added watershed lines (figure \ref{fig:pipeline}-c). 
 
 \subsection{Object Analysis}
 Particle Analyzer and additional stuff until csv export
@@ -116,6 +115,8 @@ Everything in Python
 
 
 \section{Discussion \& Outlook}
+- watershed is working best for circular objects, that's why it sometimes fails on leaves with long stems
+
 
 
 \renewcommand\bibname{References} % necessarily before \bibliography{ref}, but not working in preamble
