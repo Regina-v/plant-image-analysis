@@ -72,7 +72,7 @@ Arabidopsis is often used as a model plant, as the plant is small in size, with 
 
 
 \section{Methodology}
-The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two class, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
+The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two classes, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
 
 \begin{figure}
 	\centering
@@ -110,7 +110,7 @@ The plant is separated from the background with the help of a trainable Weka seg
 \end{table}
 
 \subsection{Objects Recognition}
-A plant consists of leaves that are attached to each other. To be able to analyze leaves individually, they need to be separated. Here, the watershed algorithm was used to separate touching objects. The algorithm first calculates an Euclidean distance map and determines center points as points which are, from a topological view, the ultimate eroded points, As the algorithm's name indicates, this topological map is "flooded" with water and at each collision of two "watersheds", a line separating two objects is drawn. The output of the algorithm is the binary image with added watershed lines (figure \ref{fig:pipeline}-c). 
+A plant consists of leaves that are attached to each other. To be able to analyze leaves individually, they need to be separated. Here, the watershed algorithm was used to separate touching objects. The algorithm first calculates an Euclidean distance map and determines center points as points which are, from a topological view, the ultimate eroded points, As the algorithm's name indicates, this topological map is "flooded" with water and at each collision of two "watersheds", a line separating two objects is drawn. Before watershed was applied, outliers were removed in both classes of the binary image by using the Fiji remove outliers function separately on each class. This function uses a median filter, for which the pixel radius was set to 6 and the threshold was set to 50. The output of the watershed algorithm is the binary image with added watershed lines (figure \ref{fig:pipeline}-c). 
 
 \subsection{Object Analysis}
 Particle Analyzer and additional stuff until csv export
@@ -121,9 +121,14 @@ Everything in Python
 \section{Results}
 
 
-\section{Discussion \& Outlook}
+\section{Discussion}
+- quality of classification depends on the selection of images for training and on the selection of traces
+
+- need to find a balance between number of labeled pixels and classification accuracy because with increasing number of labeled pixels the reading of the classifier later requires more time
+
 - watershed is working best for circular objects, that's why it sometimes fails on leaves with long stems
 
+- detection and removal of outliers is difficult for very small plants -> with our pipeline we have lost very small plants (pixel number?)
 
 
 \renewcommand\bibname{References} % necessarily before \bibliography{ref}, but not working in preamble
