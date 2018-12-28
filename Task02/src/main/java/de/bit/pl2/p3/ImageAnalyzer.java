@@ -8,6 +8,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
+import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 
 public class ImageAnalyzer {
@@ -18,19 +19,21 @@ public class ImageAnalyzer {
 
 	public void analyzeImage(ImagePlus originalImage, ImagePlus watershedImage)
 	{
-		RoiManager rm = RoiManager.getInstance();
-		if (rm == null)
-			rm = new RoiManager();
+		// Create a custom RoiManager to prevent it automatically opening a window even in batch mode
+		RoiManager rm = new RoiManager(true);
+		ResultsTable resultsTable = new ResultsTable();
+		ParticleAnalyzer.setResultsTable(resultsTable);
+		ParticleAnalyzer.setRoiManager(rm);
 		// Split the original image into RGB channels
 		ImagePlus[] originalChannelImages = ChannelSplitter.split(originalImage);
 		//IJ.debugMode = true;
 		// TODO: On some computers we do have to invert, on others we don't..
-		IJ.run(watershedImage, "Invert LUT", "");
+		//IJ.run(watershedImage, "Invert LUT", "");
 		// Perform the analysis
 		IJ.run("Set Measurements...", "area mean standard modal min centroid perimeter bounding shape feret's integrated median display redirect=None decimal=3");
-		IJ.run(watershedImage, "Analyze Particles...", "size=70-Infinity display exclude clear summarize add");
+		IJ.run(watershedImage, "Analyze Particles...", "size=70-Infinity exclude clear add");
 		// Clone the results table, because otherwise we would overwrite it with the other measurements we are doing
-		ResultsTable resultsTable = (ResultsTable)ResultsTable.getResultsTable().clone();
+		//ResultsTable resultsTable = (ResultsTable)ResultsTable.getResultsTable().clone();
 		// Iterate over all leafs and add the measured data to the CSV string
 		for(int leafIndex = 0; leafIndex < resultsTable.size(); leafIndex++)
 		{

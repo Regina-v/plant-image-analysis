@@ -61,8 +61,6 @@
 \tableofcontents
 \clearpage
 \section{Introduction}
-**REMOVE LATER!This is a dummy sentence that shows how citations work \citep{Adams.2018}.**
-
 Plant phenotyping is a research  area in the plant sciences that focuses on the quantitative measurement of both functional and structural properties of plants. During the last decade plant phenotyping evolved to non-destructive, image-analysis-based phenotyping. This computer driven approach allows the characterization of plants in a high-throughput manner \citep{Walter.2015}.
 
 The focus of this plant phenotyping research project was on the processing, segmentation and classification of Arabidopsis, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. 
@@ -166,15 +164,27 @@ Everything in Python
 
 
 \section{Discussion}
+
+** REMOVE THIS COMMENT. Maybe we should also include sub-headings in the discussion? I know it is not standard in a "normal" thesis, but maybe for this project's it might be a good idea. I don't mind either way... :) **
+
+\subsection{Segmentation}
+
+\subsection{Objects Recognition}
 - quality of classification depends on the selection of images for training and on the selection of traces
 
 - need to find a balance between number of labeled pixels and classification accuracy because with increasing number of labeled pixels the reading of the classifier later requires more time
 
 - watershed is working best for circular objects, that's why it sometimes fails on leaves with long stems
 
-Most of the decisions made about which measurements to include in the Fiji generated Results Table became clear when reading the ImageJ documentation. \citep{Ferreira.2012}. One decision that was needed to be made, was whether to take an object's position from the the top left appearing pixel or from the centroid. In this project we used the centroid to indicate the object's position, as the top left appearing pixel position has no advantage over the centroid. By using the centroid positions, we ensured that the position coordinates are more robust to rotations. If the top left appearing pixel was used, problems could arrive if the leaves were to be rotated. 
-
 - detection and removal of outliers is difficult for very small plants -> with our pipeline we have lost very small plants (pixel number?)
+
+\subsection{Object Analysis}
+** REMOVE THIS COMMENT. Discussion of where we needed to decide which measurement to include in results table/csv file. Not discussing the obvious ones. I think that is clear in the methodology section. Only discussing the position (also asked in assignment) and roundness vs circularity**
+
+Most of the decisions made about which measurements to include in the Fiji generated Results Table became clear when reading the ImageJ documentation. \citep{Ferreira.2012}. One decision that was needed to be made, was whether to take an object's position from the the top left appearing pixel or from the centroid. In this project we used the centroid to indicate the object's position, as by using the top left appearing pixel position has no advantage over the centroid. By using the centroid positions, we ensured that the position coordinates are more robust to possible rotations. If the top left appearing pixel was used, problems could arrive if the leaves were to be rotated. 
+
+In  the Fiji Results Table, circularity and roundness are two similar measurements. Circularity in ImageJ is calculated in such a way that it excludes local irregularities \citep{Wirth.2004} , therefore the roundness measurement which gives a value directly relative to the aspect ratio, was included in the csv file.
+
 
 
 \renewcommand\bibname{References} % necessarily before \bibliography{ref}, but not working in preamble
