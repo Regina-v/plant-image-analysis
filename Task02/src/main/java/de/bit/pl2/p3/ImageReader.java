@@ -48,7 +48,7 @@ public class ImageReader {
         } catch (IOException e) {
             e.getStackTrace();
         }
-        System.out.println("***** Files successfully loaded ****");
+        System.out.println("***** " + imageList.size() + " Files successfully loaded ****");
         return imageList;
     }
 }

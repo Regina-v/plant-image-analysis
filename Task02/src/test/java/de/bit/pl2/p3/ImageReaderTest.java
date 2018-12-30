@@ -1,15 +1,16 @@
 package de.bit.pl2.p3;
 
 import ij.ImagePlus;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ImageReaderTest {
 
-    @org.junit.jupiter.api.Test
+    @Test
     void filterFolder() {
         //given
         File folder = new File(this.getClass().getResource("/testset").getPath());
@@ -20,7 +21,7 @@ class ImageReaderTest {
         assertEquals(5, testList.size());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void readFilesFromFolder() {
         //given
         File folder = new File(this.getClass().getResource("/testset").getPath());
@@ -28,7 +29,7 @@ class ImageReaderTest {
         ImageReader imageReader = new ImageReader();
         List<ImagePlus> testList = imageReader.readFilesFromFolder(folder);
         //then
-        assertEquals("plant0002_rgb",testList.get(0).getShortTitle());
+        assertEquals("plant0002_rgb", testList.get(0).getShortTitle());
         assertEquals("plant001_rgb", testList.get(1).getShortTitle());
         assertEquals("plant027_rgb", testList.get(2).getShortTitle());
     }

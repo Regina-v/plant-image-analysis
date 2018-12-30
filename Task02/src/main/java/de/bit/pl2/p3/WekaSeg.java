@@ -1,14 +1,17 @@
 package de.bit.pl2.p3;
 
 import hr.irb.fastRandomForest.FastRandomForest;
-import ij.Prefs;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.process.ImageConverter;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import trainableSegmentation.WekaSegmentation;
 import trainableSegmentation.utils.Utils;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,8 @@ public class WekaSeg {
     /**
      * Train a WekaSegmentation classifier with a pair of image/binary labels.
      * Uses FastRandomForest with default parameters and training features.
-     * @param image training RGB image
+     *
+     * @param image  training RGB image
      * @param labels training binary image
      * @return trained WegaSegmentation instance
      */
@@ -71,9 +75,8 @@ public class WekaSeg {
         seg.trainClassifier();
 
         // save stuff
-        // note hardcoded stuff
-        seg.saveClassifier("C:\\Users\\regin\\Desktop\\classifier.model");
-        seg.saveData("C:\\Users\\regin\\Desktop\\data.arff");
+        seg.saveClassifier("classifier.model");
+        seg.saveData("data.arff");
 
         // print elapsed time
         Long estimatedTime = System.currentTimeMillis() - startTime;
@@ -85,72 +88,77 @@ public class WekaSeg {
     /**
      * Applies a trained classifier to a list of RGB images.
      * Loads a classifier from a .model file
+     *
      * @param imageList input list with RGB images
-     * @param path path to trained Weka Segmentation classifier
+     * @param path      path to trained Weka Segmentation classifier
      * @return classifiedImageList
      */
     public List<ImagePlus> applyClassifier(List<ImagePlus> imageList, String path) {
         WekaSegmentation seg = new WekaSegmentation();
         boolean loaded = seg.loadClassifier(path);
-        if (loaded) {System.out.println("***** Classifier loaded *****");}
-        else if (!loaded) {System.out.println("***** Can't load classifier *****"); }
+        if (loaded) {
+            System.out.println("***** Classifier loaded *****");
+        } else if (!loaded) {
+            System.out.println("***** Can't load classifier *****");
+        }
         return applyClassifier(imageList, seg);
     }
 
     /**
      * Applies a trained classifier to a list of RGB images.
+     *
      * @param imageList input list with RGB images
-     * @param seg instance of trained WekaSegmentation
+     * @param seg       instance of trained WekaSegmentation
      * @return classifiedImageList
      */
     public List<ImagePlus> applyClassifier(List<ImagePlus> imageList, WekaSegmentation seg) {
         System.out.println("***** Apply classifier to folder *****");
         List<ImagePlus> resultList = new ArrayList<>();
 
-        // starting time
-        Long startTime = System.currentTimeMillis();
-
-              
         // iterate over imageList
         for (ImagePlus img : imageList) {
             // apply classifier and get results (0 indicates number of threads is auto-detected)
             ImagePlus result = seg.applyClassifier(img, 0, false);
-            //result.show();
             result.setLut(Utils.getGoldenAngleLUT());
-            
-            //result.show();
-            
+
             // convert from red/green to grayscale
             ImageConverter imageConverter = new ImageConverter(result);
             imageConverter.convertToGray8();
             result.updateImage();
-            //result.show();
+
             // get B&W image
             IJ.run(result, "Convert to Mask", "Black Background");
-            Prefs.blackBackground = true ;
+            Prefs.blackBackground = true;
             IJ.run(result, "Make Binary", "white");
-            
-            result.show();
+
             result.setTitle(img.getShortTitle() + "_class");
             resultList.add(result);
         }
-
-        // print elapsed time
-        Long estimatedTime = System.currentTimeMillis() - startTime;
-        System.out.println(estimatedTime);
-
         return resultList;
     }
 
     /**
      * Applies a trained classifier to a list of RGB images.
      * Automatically grabs the classifier from resources.
+     *
      * @param imageList input list with RGB images
      * @return classifiedImageList
      */
     public List<ImagePlus> applyClassifier(List<ImagePlus> imageList) {
-        File segFile = new File(this.getClass().getResource("/classifier.model").getPath());
-        String segString = segFile.toString();
-        return applyClassifier(imageList, segString);
+        WekaSegmentation seg = new WekaSegmentation();
+        try {
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            Resource resource = resolver.getResource("classifier.model");
+            InputStream inputStream = resource.getInputStream();
+            boolean loaded = seg.loadClassifier(inputStream);
+            if (loaded) {
+                System.out.println("***** Classifier loaded *****");
+            } else if (!loaded) {
+                System.out.println("***** Can't load classifier *****");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return applyClassifier(imageList, seg);
     }
 }

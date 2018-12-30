@@ -31,6 +31,7 @@ public class ObjectFinder {
 
     /**
      * Applies ImageJ's Remove Outliers (selective median filter) function to input image
+     *
      * @param input ImagePlus input
      * @return ImagePlus output
      */
@@ -47,16 +48,6 @@ public class ObjectFinder {
      * @return binary output with watershed lines
      */
     private ImagePlus findObjects(ImagePlus inputPlus) {
-        // distance transform watershed to get greyscale labels
-//            ImageProcessor largestLabelProcessor = largestLabel.getProcessor();
-//            ImageProcessor dist = BinaryImages.distanceMap(largestLabelProcessor, new float[]{1, (float) Math.sqrt(2)}, true);
-//            dist.invert();
-//
-//            ImageProcessor watershedProcessor = ExtendedMinimaWatershed.extendedMinimaWatershed(dist, largestLabelProcessor, 1, 4, 32, false);
-//            resPlus = new ImagePlus(largestLabel.getShortTitle() + "-dist-watershed", watershedProcessor);
-//            resPlus.copyScale(largestLabel);
-
-        // watershed with binary output
         ImagePlus resPlus = inputPlus.duplicate();
         IJ.run(resPlus, "Watershed", "only");
         String shortTitle = resPlus.getShortTitle();
