@@ -63,9 +63,9 @@
 \section{Introduction}
 Plant phenotyping is a research  area in the plant sciences that focuses on the quantitative measurement of both functional and structural properties of plants. During the last decade plant phenotyping evolved to non-destructive, image-analysis-based phenotyping. This computer driven approach allows the characterization of plants in a high-throughput manner \citep{Walter.2015}.
 
-The focus of this plant phenotyping research project was on the processing, segmentation and classification of Arabidopsis, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. 
+The focus of this plant phenotyping research project was on the processing, segmentation and classification of \textit{A.~thaliana}, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. 
 
-Arabidopsis is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. Arabidopsis is a rosette plant, with the individual leaves being on separate, distinguishable stems. This characteristic of Arabidopsis makes leaf separation from each other less complex.  Given that we were only exploring viable methods in this research area, Arabidopsis was our chosen plant, as it gave us the opportunity to explore with different algorithms in an easier way than what the other given data set, Tobacco, would have allowed us to do. 
+\textit{A.~thaliana} is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. \textit{A.~thaliana} is a rosette plant, with the individual leaves being on separate, distinguishable stems. This characteristic of \textit{A.~thaliana} makes leaf separation from each other less complex.  Given that we were only exploring viable methods in this research area, \textit{A.~thaliana} was our chosen plant, as it gave us the opportunity to explore with different algorithms in an easier way than what the other given data set, Tobacco, would have allowed us to do. 
 
 
 
@@ -111,7 +111,9 @@ The plant is separated from the background with the help of a trainable Weka seg
 A plant consists of leaves that are attached to each other. To be able to analyze leaves individually, they need to be separated. Here, the watershed algorithm was used to separate touching objects. The algorithm first calculates an Euclidean distance map and determines center points as points which are, from a topological view, the ultimate eroded points, As the algorithm's name indicates, this topological map is "flooded" with water and at each collision of two "watersheds", a line separating two objects is drawn. Before watershed was applied, outliers were removed in both classes of the binary image by using the Fiji remove outliers function separately on each class. This function uses a median filter, for which the pixel radius was set to 6 and the threshold was set to 50. The output of the watershed algorithm is the binary image with added watershed lines (figure \ref{fig:pipeline}-c). 
 
 \subsection{Object Analysis}
-After an image was subjected to aforementioned steps, the resulting watershed image was then analyzed with Fiji's  "Analyze Particles" command. The measurements that were selected to be performed during the particle analysis are:
+*** COMMENT Regina: The listed measurements should only contain the ones we actually used to generate a value in the csv file. For tab:result\_table I would leave out the middle column since this is hidden to the user and not important for the user. **
+
+After an image was subjected to the aforementioned steps, the resulting watershed image was then analyzed with Fiji's  "Analyze Particles" command. The measurements that were selected to be performed during the particle analysis are:
 \begin{itemize}
 \item Area - Measures the area of selection in square pixels. This was used to obtain the object's size.
 \item Standard deviation - Used to generate the mean gray value. It is the standard deviation of the grey values.
@@ -130,28 +132,27 @@ After an image was subjected to aforementioned steps, the resulting watershed im
 
 Particles with a pixel size less than 70 were excluded from the "Analyze Particles" command. The value of 70 was established by trial and error, by inspecting the lines drawn by the watershed algorithm to separate objects.
 
-Fiji automatically generates a Results Table, with the selected measurements. These results can be accessed by using the \textit{getResultsTable() }method in the source code, to select the appropriate results for further use. By using this method a csv file with all the results deemed necessary was created. 
+Fiji automatically generates a Results Table, with the selected measurements. These results can be accessed by using the \texttt{getResultsTable()} method in the source code, to select the appropriate results for further use. By using this method, a csv file with all the results deemed necessary was created. 
 
-The generated Results Table results ("columns") that were included in the csv file can be seen in Table \ref{tab: result_table}.
+The generated Results Table results ("columns") that were included in the csv file can be seen in Table \ref{tab:result_table}.
 \begin{table}[htbp]
 	\centering
-	\caption{Measurement options, Results Table results and the corresponding value in the csv file.} \label{table: Table 2}
+	\caption{Measurement options, Results Table results and the corresponding value in the csv file.}
 	\begin{tabular}{lll}
 		\toprule
 		Measurement option & Results Table results  & Corresponding value in the csv file \\
 		\midrule
 		 Display Labels & Index and Label & objectID and imageID\\
 		Area & Area & size\\
-		Centroid & X and Y & pos x and pos y\\
+		Centroid & X and Y & pos\_x and pos\_y\\
 		Shape descriptors & Round & roundness\\
-        	Integrated density & RawIntDen & brightness sum\\
-      		Mean gray value & Mean & brightness average\\
-       		Bounding rectangle  & Width and Height & width and height ratio\\
-        	\bottomrule
+        Integrated density & RawIntDen & brightness\_sum\\
+      	Mean gray value & Mean & brightness\_average\\
+       	Bounding rectangle & Width and Height & width\_to\_height\_ratio\\
+        \bottomrule
 	\end{tabular}
-	\label{tab: result_table}
+	\label{tab:result_table}
 \end{table}
-
 
 As brightness values calculated from binary watershed images is insufficient for plants, Fiji's "Analyze Particles" command was also applied to the original RGB images. The brightness (both the sum and the average) of each of the three color channels (red, green and blue) were individually calculated. These individual channel results were then added together to calculate the sum of the brightness and average brightness for each object. To ensure computational efficiency not all the measurements were selected again, as this would have resulted in the duplication of results, eg. the size of the objects will remain constant, it is independent of the type of input image. The measurements that were necessary to be applied to the original RGB images, are the mean gray value and the integrated density. Results regarding the brightness of each color channel were attained and added to the csv file. 
 
@@ -165,11 +166,12 @@ Everything in Python
 
 \section{Discussion}
 
-** REMOVE THIS COMMENT. Maybe we should also include sub-headings in the discussion? I know it is not standard in a "normal" thesis, but maybe for this project's it might be a good idea. I don't mind either way... :) **
+** REMOVE THIS COMMENT. 
+Francel: Maybe we should also include sub-headings in the discussion? I know it is not standard in a "normal" thesis, but maybe for this project's it might be a good idea. I don't mind either way... :) 
 
-\subsection{Segmentation}
+Regina: sub-headings in the discussion chapter is standard. but it shouldn't be the same headings from another chapter (normally it's tempting to use the same heading from the results in the discussion). And I think that the explanation of our choice of measurements should go to the methodology chapter.**
 
-\subsection{Objects Recognition}
+\subsection{Challenges in the Identification of Single Leaves}
 - quality of classification depends on the selection of images for training and on the selection of traces
 
 - need to find a balance between number of labeled pixels and classification accuracy because with increasing number of labeled pixels the reading of the classifier later requires more time
