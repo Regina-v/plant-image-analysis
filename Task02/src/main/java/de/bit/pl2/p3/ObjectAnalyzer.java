@@ -69,7 +69,7 @@ class ObjectAnalyzer {
         // Iterate over all leafs and add the measured data to the CSV string
         for (int leafIndex = 0; leafIndex < resultsTable.size(); leafIndex++) {
             addValueToCSV(watershedImage.getShortTitle(), false);
-            addValueToCSV(String.valueOf(leafIndex), false);
+            addValueToCSV(String.valueOf(leafIndex+1), false);
             addColumnValueToCSV(resultsTable, "Area", leafIndex, false);
 
             // X and Y coordinates are the average coordinates of the centroid
