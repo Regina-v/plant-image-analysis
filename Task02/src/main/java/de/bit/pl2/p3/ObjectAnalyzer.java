@@ -2,8 +2,11 @@ package de.bit.pl2.p3;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
+import ij.measure.Measurements;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
+import ij.plugin.filter.Analyzer;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 
@@ -74,9 +77,6 @@ class ObjectAnalyzer {
             addColumnValueToCSV(resultsTable, "Y", leafIndex, false);
             addColumnValueToCSV(resultsTable, "Round", leafIndex, false);
 
-            // Set measurements to measure only brightness-related values
-            IJ.run("Set Measurements...", "mean integrated redirect=None decimal=3");
-
             // Measure for each channel individually and add to CSV
             measureLeafAndAddBrightnessDataToCSV(originalChannelImages[0], rm, leafIndex);
             measureLeafAndAddBrightnessDataToCSV(originalChannelImages[1], rm, leafIndex);
@@ -102,13 +102,21 @@ class ObjectAnalyzer {
     }
 
     private void measureLeafAndAddBrightnessDataToCSV(ImagePlus image, RoiManager rm, int leafIndex) {
-        // select ROI and measure
-        rm.select(image, leafIndex);
-        IJ.run(image, "Measure", "");
+        // IJ.run("Set Measurements...", "mean integrated redirect=None decimal=3");
+        int measurements = Measurements.MEAN + Measurements.INTEGRATED_DENSITY;
+
+        // rm.select(image, leafIndex);
+        Roi roi = rm.getRoi(leafIndex);
+        image.setRoi(roi);
+
+        // IJ.run(imp, "Measure", "");
+        ResultsTable resultsTable = new ResultsTable();
+        Analyzer analyzer = new Analyzer(image, measurements, resultsTable);
+        analyzer.measure();
 
         // Get the brightness sum and average from the result table
-        double brightnessSum = getIntegerColumnValue(ResultsTable.getResultsTable(), "RawIntDen", 0);
-        double brightnessAverage = getDoubleColumnValue(ResultsTable.getResultsTable(), "Mean", 0);
+        double brightnessSum = getIntegerColumnValue(resultsTable, "RawIntDen", 0);
+        double brightnessAverage = getDoubleColumnValue(resultsTable, "Mean", 0);
 
         // Add both to CSV
         addValueToCSV(String.valueOf(brightnessSum), false);

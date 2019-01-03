@@ -45,29 +45,16 @@ public class App {
             formatter.printHelp("--input [INPUT] --output [OUTPUT]:", options);
             System.exit(1);
         }
-
-//        // for debugging without command line interface
-//        File inputPath = new File("C:\\Users\\regin\\Desktop\\test");
-//        String outputPathBase = "C:\\Users\\regin\\Desktop";
-//
-//        // read images from a folder and store as ImagePlus objects in List
-//        ImageReader imageReader = new ImageReader();
-//        List<ImagePlus> inputImages = imageReader.readFilesFromFolder(inputPath);
-//        // Actually process the images
-//        processImages(inputImages, outputPathBase);
     }
 
     private static void processImages(List<ImagePlus> inputImages, String outputPathBase) {
         // Create the output folders from the base folder
-        String outputPathClass = outputPathBase + File.separator + "class";
-        String outputPathObject = outputPathBase + File.separator + "object";
+        String outputPathObject = outputPathBase + File.separator + "images";
         try {
-            Files.createDirectories(Paths.get(outputPathClass));
             Files.createDirectories(Paths.get(outputPathObject));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        File outputPathClassFile = new File(outputPathClass);
         File outputPathObjectFile = new File(outputPathObject);
 
         // apply Weka (from resources) classifier to images in list
@@ -84,7 +71,6 @@ public class App {
 
         // save images
         ImageSaver imageSaver = new ImageSaver();
-        imageSaver.saveImages(classifiedImages, outputPathClassFile);
         imageSaver.saveImages(objectImages, outputPathObjectFile);
     }
 }
