@@ -159,10 +159,56 @@ As brightness values calculated from binary watershed images is insufficient for
 An additional requirement of the project was to include the width to height ratio. As this is not a built-in measurement option in Fiji, the width and the height that were included in the Results Table, as part of the "Bounding rectangle" measurement were extracted and the ratio was calculated, by dividing the leaf width by the leaf height. The calculated width to height ratio was added to the csv file to be available for further use. 
 
 \subsection{Explorative Data Analysis}
-Everything in Python
+Data analysis was conducted in Jupyter Notebooks using several Python packages. Data were handled with the python package pandas. For visual statistical analysis, the seaborn package was used. Numerical statistical analysis was mainly performed using the stats module from the python package scipy. For general plotting of graphs, the pyplot module from the python package matplotlib was used.
 
 \section{Results}
+\subsection{Overview of the 2014 datasets}
 
+\begin{figure}
+	\centering
+	\includegraphics[width=13cm]{pic/overview}
+	\caption{Overview of correlations in the 2014 datasets shown in a pairplot matrix.}
+	\label{fig:overview}
+\end{figure}
+
+\subsection{Analyses of correlations}
+\begin{figure}
+	\centering
+	\subfloat[Size vs. Roundness]{\includegraphics[width=.45\textwidth]{pic/size-roundness}}
+	\qquad
+	\subfloat[Size vs. Color]{\includegraphics[width=.45\textwidth]{pic/size-color}}
+	\qquad
+	\subfloat[Number of Leaves vs. Total Area]{\includegraphics[width=.45\textwidth]{pic/number-area}}
+	\caption{XXX}
+	\label{fig:corr}
+\end{figure}
+
+- Correlation of leaf size and roundness
+- Correlation of leaf size and color
+- Correlation of leaf number and total plant area
+
+
+\subsection{Comparison of A1 and A2 datasets}
+
+\begin{figure}
+	\centering
+	\subfloat[A1 Dataset]{\includegraphics[width=.45\textwidth]{pic/A1-size}}
+	\qquad
+	\subfloat[A2 Dataset]{\includegraphics[width=.45\textwidth]{pic/A2-size}}
+	\caption{XXX}
+	\label{fig:A1-A2-size}
+\end{figure}
+
+\subsection{Comparison of leaf count to ground truth}
+
+\begin{figure}
+	\centering
+	\subfloat[A1 Dataset]{\includegraphics[scale=.6]{pic/A1-truth}}
+	\qquad
+	\subfloat[A2 Dataset]{\includegraphics[scale=.6]{pic/A2-truth}}
+	\caption{XXX}
+	\label{fig:truth}
+\end{figure}
 
 \section{Discussion}
 
