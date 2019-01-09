@@ -63,14 +63,10 @@
 \section{Introduction}
 Plant phenotyping is a research  area in the plant sciences that focuses on the quantitative measurement of both functional and structural properties of plants. During the last decade plant phenotyping evolved to non-destructive, image-analysis-based phenotyping. This computer driven approach allows the characterization of plants in a high-throughput manner \citep{Walter.2015}.
 
-The focus of this plant phenotyping research project was on the processing, segmentation and classification of \textit{A.~thaliana}, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. 
-
-\textit{A.~thaliana} is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. \textit{A.~thaliana} is a rosette plant, with the individual leaves being on separate, distinguishable stems. This characteristic of \textit{A.~thaliana} makes leaf separation from each other less complex.  Given that we were only exploring viable methods in this research area, \textit{A.~thaliana} was our chosen plant, as it gave us the opportunity to explore with different algorithms in an easier way than what the other given data set, Tobacco, would have allowed us to do. 
-
-
+The focus of this plant phenotyping research project was on the processing, segmentation and classification of \textit{A.~thaliana}, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. \textit{A.~thaliana} is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. 
 
 \section{Methodology}
-The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two classes, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
+Each image was processed in a consecutive series of algorithms and tools which are implemented as plugins in the Fiji distribution \citep{Schindelin.2012} of the open-source software ImageJ \citep{Rueden.2017}. The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two classes, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
 
 \begin{figure}
 	\centering
@@ -86,7 +82,7 @@ The image analysis approach consists of three main steps (figure \ref{fig:pipeli
 \end{figure}
 
 \subsection{Segmentation}
-The plant is separated from the background with the help of a trainable Weka segmentation classifier, which is available as a plugin for Fiji. Weka provides a GUI to train machine learning algorithms to produce pixel-based segmentations. The user can add traces to classes and train the classifier with those. Afterwards, traces/regions of interest can be adjusted and the classifier can be re-trained to improve classification. Six representative pictures are selected from the 2017 data set for training (plant029, plant145 and plant159 from A1; plant032, plant034 and plant037 from A2). Pictures are chosen to cover the whole range of plant green shades and the range of background characteristics of the given data sets. The Weka Experimenter was used to assess the performance of different machine learning algorithms. Based on these results (table \ref{tab:weka}), FastRandomForest was used as a classifier. By applying the trained classifier to the RGB input images, for each input image a binary classification image is obtained (figure \ref{fig:pipeline}-b). 
+The plant is separated from the background with the help of a trainable Weka segmentation classifier \citep{ArgandaCarreras.2017}. Weka provides a GUI to train machine learning algorithms to produce pixel-based segmentations. The user can add traces to classes and train the classifier with those. Afterwards, traces/regions of interest can be adjusted and the classifier can be re-trained to improve classification. Six representative pictures are selected from the 2017 data set for training (plant029, plant145 and plant159 from A1; plant032, plant034 and plant037 from A2). Pictures are chosen to cover the whole range of plant green shades and the range of background characteristics of the given data sets. The Weka Experimenter was used to assess the performance of different machine learning algorithms. Based on these results (table \ref{tab:weka}), FastRandomForest was used with default parameters as a classifier. By applying the trained classifier to the RGB input images, for each input image a binary classification image is obtained (figure \ref{fig:pipeline}-b). 
 
 \begin{table}[htbp]
 	\centering
@@ -108,33 +104,28 @@ The plant is separated from the background with the help of a trainable Weka seg
 \end{table}
 
 \subsection{Objects Recognition}
-A plant consists of leaves that are attached to each other. To be able to analyze leaves individually, they need to be separated. Here, the watershed algorithm was used to separate touching objects. The algorithm first calculates an Euclidean distance map and determines center points as points which are, from a topological view, the ultimate eroded points, As the algorithm's name indicates, this topological map is "flooded" with water and at each collision of two "watersheds", a line separating two objects is drawn. Before watershed was applied, outliers were removed in both classes of the binary image by using the Fiji remove outliers function separately on each class. This function uses a median filter, for which the pixel radius was set to 6 and the threshold was set to 50. The output of the watershed algorithm is the binary image with added watershed lines (figure \ref{fig:pipeline}-c). 
+A plant consists of leaves that are attached to each other. To be able to analyze leaves individually, they need to be separated. Here, the watershed algorithm was used to separate touching objects. Its implementation in Fiji is based on the algorithm described by \citet{Kunt.1990}. The algorithm first calculates an Euclidean distance map and determines center points as points which are, from a topological view, the ultimate eroded points, As the algorithm's name indicates, this topological map is "flooded" with water and at each collision of two "watersheds", a line separating two objects is drawn. Before watershed was applied, outliers were removed in both classes of the binary image by using the Fiji remove outliers function separately on each class. This function uses a median filter, for which the pixel radius was set to 6 and the threshold was set to 50. The output of the watershed algorithm is the binary image with added watershed lines (figure \ref{fig:pipeline}-c). 
 
 \subsection{Object Analysis}
-*** COMMENT Regina: The listed measurements should only contain the ones we actually used to generate a value in the csv file. For tab:result\_table I would leave out the middle column since this is hidden to the user and not important for the user. **
+After an image was subjected to the aforementioned steps, the resulting watershed image was then analyzed using Fiji's Analyze Particles tool. The measurements that were selected to be performed during the particle analysis are:
 
-After an image was subjected to the aforementioned steps, the resulting watershed image was then analyzed with Fiji's  "Analyze Particles" command. The measurements that were selected to be performed during the particle analysis are:
-\begin{itemize}
+\begin{compactitem}
 \item Area - Measures the area of selection in square pixels. This was used to obtain the object's size.
-\item Standard deviation - Used to generate the mean gray value. It is the standard deviation of the grey values.
-\item Mean gray value - Average gray value of the selection, which is used in the calculation of the average brightness.
-\item Modal gray value - Most frequently occurring gray value within the selection. This will always be 255 when the analysis is done on the watershed image.
-\item Min and Max gray value - The minimum and maximum gray value of the selection.
-\item Perimeter - An alternative way to define the size of an object as it is the length of the outside boundary of the selection.
-\item Centroid - This gives us the center point of the selection and uses the average X and Y coordinates for all the pixels in the selection or image.
-\item Bounding rectangle - This smallest possible rectangle that encloses the selection. It gives the X and Y coordinates in respect of the upper left corner of the rectangle, as well as the height and width, from which we will calculate the height-width ratio from.
+\item Mean gray value - Average gray value of the selection.
+\item Centroid - Provides the center point of the selection as the average X and Y coordinates for all pixels in the selection or image.
+\item Bounding rectangle - This is the smallest possible rectangle that encloses the selection. It gives the X and Y coordinates in respect of the upper left corner of the rectangle, as well as the height and width, from which the width-to-height-ratio will be calculated.
 \item Shape descriptors - These descriptors are used to attain the roundness of each object.
 \item Feret's diameter - Can be used to find the longest distance between any two points on the selection boundary.
 \item Integrated density- Used to indicate the sum of the brightness, as it sums the values of the pixels in the image or selection
-\item Median - Gives the median value of the pixels in the image or selection.
-\item Display labels - Selected to have an easy way to find the image name, as well the object ID.
-\end{itemize}
+\end{compactitem}
 
 Particles with a pixel size less than 70 were excluded from the "Analyze Particles" command. The value of 70 was established by trial and error, by inspecting the lines drawn by the watershed algorithm to separate objects.
 
 Fiji automatically generates a Results Table, with the selected measurements. These results can be accessed by using the \texttt{getResultsTable()} method in the source code, to select the appropriate results for further use. By using this method, a csv file with all the results deemed necessary was created. 
 
 The generated Results Table results ("columns") that were included in the csv file can be seen in Table \ref{tab:result_table}.
+
+%TODO *** COMMENT Regina: I would leave out the middle column since this is hidden to the user and not important for the user. **
 \begin{table}[htbp]
 	\centering
 	\caption{Measurement options, Results Table results and the corresponding value in the csv file.}
@@ -160,6 +151,9 @@ An additional requirement of the project was to include the width to height rati
 
 \subsection{Explorative Data Analysis}
 Data analysis was conducted in Jupyter Notebooks using several Python packages. Data were handled with the python package pandas. For visual statistical analysis, the seaborn package was used. Numerical statistical analysis was mainly performed using the stats module from the python package scipy. For general plotting of graphs, the pyplot module from the python package matplotlib was used.
+
+\subsection{Data}
+For this study, datasets of the Leaf Segmentation and Counting Challenges were used \citep{Minervini.2016}. The imaging data were manually annotated to provide ground truth information \citep{Scharr.2014}. The datasets contain images of greenhouse images with \textit{A.~thaliana} and \textit{N.~tabacum}. \textit{A.~thaliana} is a rosette plant, with the individual leaves being on separate, distinguishable stems. This characteristic of \textit{A.~thaliana} makes leaf separation from each other less complex.  Given that we were only exploring viable methods in this research area, \textit{A.~thaliana} was our chosen plant, as it gave us the opportunity to explore with different algorithms in an easier way than what the \textit{N.~tabacum} dataset would have allowed us to do. Since the datasets for 2014, 2015 and 2017 are nearly the same, only differing in the amount of provided meta data, datasets from a single year were used for analysis. 
 
 \section{Results}
 \subsection{Overview of the 2014 datasets}
@@ -212,10 +206,9 @@ Data analysis was conducted in Jupyter Notebooks using several Python packages. 
 
 \section{Discussion}
 
-** REMOVE THIS COMMENT. 
-Francel: Maybe we should also include sub-headings in the discussion? I know it is not standard in a "normal" thesis, but maybe for this project's it might be a good idea. I don't mind either way... :) 
-
-Regina: sub-headings in the discussion chapter is standard. but it shouldn't be the same headings from another chapter (normally it's tempting to use the same heading from the results in the discussion). And I think that the explanation of our choice of measurements should go to the methodology chapter.**
+%TODO
+%TODO Francel: Maybe we should also include sub-headings in the discussion? I know it is not standard in a "normal" thesis, but maybe for this project's it might be a good idea. I don't mind either way... :) 
+%TODO Regina: sub-headings in the discussion chapter is standard. but it shouldn't be the same headings from another chapter (normally it's tempting to use the same heading from the results in the discussion). And I think that the explanation of our choice of measurements should go to the methodology chapter.**
 
 \subsection{Challenges in the Identification of Single Leaves}
 - quality of classification depends on the selection of images for training and on the selection of traces
@@ -227,11 +220,13 @@ Regina: sub-headings in the discussion chapter is standard. but it shouldn't be 
 - detection and removal of outliers is difficult for very small plants -> with our pipeline we have lost very small plants (pixel number?)
 
 \subsection{Object Analysis}
-** REMOVE THIS COMMENT. Discussion of where we needed to decide which measurement to include in results table/csv file. Not discussing the obvious ones. I think that is clear in the methodology section. Only discussing the position (also asked in assignment) and roundness vs circularity**
+%TODO ** REMOVE THIS COMMENT. Discussion of where we needed to decide which measurement to include in results table/csv file. Not discussing the obvious ones. I think that is clear in the methodology section. Only discussing the position (also asked in assignment) and roundness vs circularity**
 
 Most of the decisions made about which measurements to include in the Fiji generated Results Table became clear when reading the ImageJ documentation. \citep{Ferreira.2012}. One decision that was needed to be made, was whether to take an object's position from the the top left appearing pixel or from the centroid. In this project we used the centroid to indicate the object's position, as by using the top left appearing pixel position has no advantage over the centroid. By using the centroid positions, we ensured that the position coordinates are more robust to possible rotations. If the top left appearing pixel was used, problems could arrive if the leaves were to be rotated. 
 
-In  the Fiji Results Table, circularity and roundness are two similar measurements. Circularity in ImageJ is calculated in such a way that it excludes local irregularities \citep{Wirth.2004} , therefore the roundness measurement which gives a value directly relative to the aspect ratio, was included in the csv file.
+In  the Fiji Results Table, circularity and roundness are two similar measurements. Circularity in ImageJ is calculated in such a way that it excludes local irregularities 
+%TODO \citep{Wirth.2004} If I'm not taken wrong, these are powerpoint slides. I don't think we are allowed to use those as a source... 
+, therefore the roundness measurement which gives a value directly relative to the aspect ratio, was included in the csv file.
 
 
 
