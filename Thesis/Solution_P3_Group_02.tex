@@ -65,7 +65,12 @@ Plant phenotyping is a research  area in the plant sciences that focuses on the 
 
 The focus of this plant phenotyping research project was on the processing, segmentation and classification of \textit{A.~thaliana}, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. \textit{A.~thaliana} is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. 
 
+The project was divided into two main parts:
+a) Image Analysis with Fiji in Java
+b) Explorative Data Analysis with Python in Jupyter Notebook.
+
 \section{Methodology}
+The images used in this project are from the Leaf Segmentation Challenge. These images were supplied to the challenge by the International Plant Phenotyping Network (IPPN).
 Each image was processed in a consecutive series of algorithms and tools which are implemented as plugins in the Fiji distribution \citep{Schindelin.2012} of the open-source software ImageJ \citep{Rueden.2017}. The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two classes, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
 
 \begin{figure}
@@ -125,21 +130,20 @@ Fiji automatically generates a Results Table, with the selected measurements. Th
 
 The generated Results Table results ("columns") that were included in the csv file can be seen in Table \ref{tab:result_table}.
 
-%TODO *** COMMENT Regina: I would leave out the middle column since this is hidden to the user and not important for the user. **
 \begin{table}[htbp]
 	\centering
-	\caption{Measurement options, Results Table results and the corresponding value in the csv file.}
+	\caption{Measurement options and the corresponding value in the csv file.}
 	\begin{tabular}{lll}
 		\toprule
-		Measurement option & Results Table results  & Corresponding value in the csv file \\
+		Measurement option  & Corresponding value in the csv file \\
 		\midrule
-		 Display Labels & Index and Label & objectID and imageID\\
-		Area & Area & size\\
-		Centroid & X and Y & pos\_x and pos\_y\\
-		Shape descriptors & Round & roundness\\
-        Integrated density & RawIntDen & brightness\_sum\\
-      	Mean gray value & Mean & brightness\_average\\
-       	Bounding rectangle & Width and Height & width\_to\_height\_ratio\\
+		 Display Labels & objectID and imageID\\
+		Area & size\\
+		Centroid & pos\_x and pos\_y\\
+		Shape descriptors & roundness\\
+        Integrated density & brightness\_sum\\
+      	Mean gray value & brightness\_average\\
+       	Bounding rectangle & width\_to\_height\_ratio\\
         \bottomrule
 	\end{tabular}
 	\label{tab:result_table}
