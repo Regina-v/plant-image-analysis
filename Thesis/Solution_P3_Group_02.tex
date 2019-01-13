@@ -70,7 +70,6 @@ a) Image Analysis with Fiji in Java
 b) Explorative Data Analysis with Python in Jupyter Notebook.
 
 \section{Methodology}
-The images used in this project are from the Leaf Segmentation Challenge. These images were supplied to the challenge by the International Plant Phenotyping Network (IPPN).
 Each image was processed in a consecutive series of algorithms and tools which are implemented as plugins in the Fiji distribution \citep{Schindelin.2012} of the open-source software ImageJ \citep{Rueden.2017}. The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two classes, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
 
 \begin{figure}
@@ -149,9 +148,13 @@ The generated Results Table results ("columns") that were included in the csv fi
 	\label{tab:result_table}
 \end{table}
 
-As brightness values calculated from binary watershed images is insufficient for plants, Fiji's "Analyze Particles" command was also applied to the original RGB images. The brightness (both the sum and the average) of each of the three color channels (red, green and blue) were individually calculated. These individual channel results were then added together to calculate the sum of the brightness and average brightness for each object. To ensure computational efficiency not all the measurements were selected again, as this would have resulted in the duplication of results, eg. the size of the objects will remain constant, it is independent of the type of input image. The measurements that were necessary to be applied to the original RGB images, are the mean gray value and the integrated density. Results regarding the brightness of each color channel were attained and added to the csv file. 
+As brightness values calculated from binary watershed images is insufficient for plants, Fiji's "Analyze Particles" command was also applied to the original RGB images. The Particle Analyzer however, can only work with one channel (ie. grayscale) images. Working with the original RGB images required a split in the color channels. The analysis was then done on the chosen channel. The brightness (both the sum and the average) of each of the three color channels (red, green and blue) were individually calculated. These individual channel results were then added together to calculate the sum of the brightness and average brightness for each object. To ensure computational efficiency not all the measurements were selected again, as this would have resulted in the duplication of results, eg. the size of the objects will remain constant, it is independent of the type of input image. The measurements that were necessary to be applied to the original RGB images, are the mean gray value and the integrated density. Results regarding the brightness of each color channel were attained and added to the csv file. 
 
-An additional requirement of the project was to include the width to height ratio. As this is not a built-in measurement option in Fiji, the width and the height that were included in the Results Table, as part of the "Bounding rectangle" measurement were extracted and the ratio was calculated, by dividing the leaf width by the leaf height. The calculated width to height ratio was added to the csv file to be available for further use. 
+An additional requirement of the project was to include the width to height ratio. As this is not a built-in measurement option in Fiji, the width and the height that were included in the Results Table, as part of the "Bounding rectangle" measurement were extracted and the ratio was calculated, by dividing the leaf width by the leaf height. The calculated width to height ratio was added to the csv file to be available for further use.
+
+The Feret Ratio was additionally calculated from the minimum caliper diameter (MinFeret) and the maximum caliper (MaxFeret) values. These values are calculated as part of the Feret's diameter measurements. The ratio was calculated, by dividing MinFeret by MaxFeret, as another approach to get a width to height ratio overview for each leaf.
+
+
 
 \subsection{Explorative Data Analysis}
 Data analysis was conducted in Jupyter Notebooks using several Python packages. Data were handled with the python package pandas. For visual statistical analysis, the seaborn package was used. Numerical statistical analysis was mainly performed using the stats module from the python package scipy. For general plotting of graphs, the pyplot module from the python package matplotlib was used.
@@ -223,13 +226,11 @@ For this study, datasets of the Leaf Segmentation and Counting Challenges were u
 - detection and removal of outliers is difficult for very small plants -> with our pipeline we have lost very small plants (pixel number?)
 
 \subsection{Object Analysis}
-%TODO ** REMOVE THIS COMMENT. Discussion of where we needed to decide which measurement to include in results table/csv file. Not discussing the obvious ones. I think that is clear in the methodology section. Only discussing the position (also asked in assignment) and roundness vs circularity**
+Object analysis to be included in the generated Results Table are clearly formulated in the ImageJ documentation \citep{Ferreira.2012}. A decision that was needed to be made, was whether to take an object's position from the the top left appearing pixel or from the centroid. In this project we used the centroid to indicate the object's position, as by using the top left appearing pixel position has no advantage over the centroid. By using the centroid positions, we ensured that the position coordinates are more robust to possible rotations. If the top left appearing pixel was used, problems could arrive if the leaves were to be rotated. 
 
-Most of the decisions made about which measurements to include in the Fiji generated Results Table became clear when reading the ImageJ documentation. \citep{Ferreira.2012}. One decision that was needed to be made, was whether to take an object's position from the the top left appearing pixel or from the centroid. In this project we used the centroid to indicate the object's position, as by using the top left appearing pixel position has no advantage over the centroid. By using the centroid positions, we ensured that the position coordinates are more robust to possible rotations. If the top left appearing pixel was used, problems could arrive if the leaves were to be rotated. 
+In  the Fiji Results Table, circularity and roundness are two similar measurements. Circularity in ImageJ is calculated in such a way that it excludes local irregularities, therefore the roundness measurement which gives a value directly relative to the aspect ratio, was included in the csv file. 
 
-In  the Fiji Results Table, circularity and roundness are two similar measurements. Circularity in ImageJ is calculated in such a way that it excludes local irregularities 
-%TODO \citep{Wirth.2004} If I'm not taken wrong, these are powerpoint slides. I don't think we are allowed to use those as a source... 
-, therefore the roundness measurement which gives a value directly relative to the aspect ratio, was included in the csv file.
+After calculating both the width to height ratio and the Feret ratio for each leaf, it was found that although the two ratio's did render corresponding values in some instances, there were other instances where the ratio values differed significantly. Manual calculations were done (measuring the length and width of a leaf on-screen with a ruler) and it was found that in the cases where there was a difference between the ratio's, the Feret ratio was more accurate. This is because the bounding rectangle is not turned by Fiji according to the leaf's position, instead the bounding rectangle remains parallel to the image border.
 
 
 
