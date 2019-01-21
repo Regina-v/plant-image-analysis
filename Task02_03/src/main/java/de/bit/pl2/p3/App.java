@@ -47,6 +47,12 @@ public class App {
         }
     }
 
+    /**
+     * Processes a list of RGB input images by segmentating the image into background and single leaves and
+     * following analysis of single leafs. Saves the images and the CSV file of the analysis in the output folder.
+     * @param inputImages list with RGB input images
+     * @param outputPathBase output folder path
+     */
     private static void processImages(List<ImagePlus> inputImages, String outputPathBase) {
         // Create the output folders from the base folder
         String outputPathObject = outputPathBase + File.separator + "images";

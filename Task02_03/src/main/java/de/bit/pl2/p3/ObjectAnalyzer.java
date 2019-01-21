@@ -36,12 +36,19 @@ class ObjectAnalyzer {
                 "brightness_average_blue" + SEPARATOR +
                 "brightness_sum" + SEPARATOR +
                 "brightness_average" + SEPARATOR +
-                "min_feret" + SEPARATOR + // = width?
-                "max_feret" + SEPARATOR +  // = height?
+                "min_feret" + SEPARATOR +
+                "max_feret" + SEPARATOR +
                 "feret_ratio" + SEPARATOR +
                 "width_to_height_ratio" + LINE_END);
     }
 
+    /**
+     * Processes a list of binary images with identified objects and analyzes single images.
+     * Writes the result to a CSV file, stored in the output folder.
+     * @param inputImages list with RGB input images
+     * @param objectImages list with binary images where single leaves are identified
+     * @param outputPathBase output folder path
+     */
     void parseList(List<ImagePlus> inputImages, List<ImagePlus> objectImages, String outputPathBase) {
         System.out.println("***** Analyze Objects *****");
         for (int i = 0; i < inputImages.size(); i++) {
@@ -52,6 +59,11 @@ class ObjectAnalyzer {
         writeResultsToCSVFile(new File(outputPathBase + File.separator + "results.csv"));
     }
 
+    /**
+     * Analyzes single binary images by using the Analyze Particles tools from Fiji. Saves results to a csv string.
+     * @param originalImage RGB input image
+     * @param watershedImage binary input image with identified objects
+     */
     void analyzeImage(ImagePlus originalImage, ImagePlus watershedImage) {
         // Create a custom RoiManager to prevent it automatically opening a window even in batch mode
         RoiManager rm = new RoiManager(true);
@@ -101,6 +113,12 @@ class ObjectAnalyzer {
         }
     }
 
+    /**
+     * Measures single leaf brightness mean and sum and saves the results to the csv string.
+     * @param image binary input image with identified objects
+     * @param rm ROI manager of the input image
+     * @param leafIndex int index of the leaf to be analyzed
+     */
     private void measureLeafAndAddBrightnessDataToCSV(ImagePlus image, RoiManager rm, int leafIndex) {
         // IJ.run("Set Measurements...", "mean integrated redirect=None decimal=3");
         int measurements = Measurements.MEAN + Measurements.INTEGRATED_DENSITY;
@@ -123,6 +141,10 @@ class ObjectAnalyzer {
         addValueToCSV(String.valueOf(brightnessAverage), false);
     }
 
+    /**
+     * Writes the CSV string to the output file
+     * @param file output File
+     */
     void writeResultsToCSVFile(File file) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(stringBuilder.toString());
@@ -131,25 +153,58 @@ class ObjectAnalyzer {
         }
     }
 
+    /**
+     * Takes a value from the results table and adds this value to the CSV string.
+     * @param resultsTable ResultsTable
+     * @param columnName String column name
+     * @param rowIndex int row index
+     * @param isLastInRow boolean if this will be the last row of the CSV string
+     */
     private void addColumnValueToCSV(ResultsTable resultsTable, String columnName, int rowIndex, boolean isLastInRow) {
         String value = getStringColumnValue(resultsTable, columnName, rowIndex);
         addValueToCSV(value, isLastInRow);
     }
 
+    /**
+     * Adds a value to the CSV string.
+     * @param value String
+     * @param isLastInRow boolean if this will be the last row of the CSV string
+     */
     private void addValueToCSV(String value, boolean isLastInRow) {
         stringBuilder.append(value).append(isLastInRow ? LINE_END : SEPARATOR);
     }
 
+    /**
+     * Accesses a results table and returns a single value as string
+     * @param resultsTable Fiji results table
+     * @param columnName String column name
+     * @param rowIndex int row index
+     * @return value as String
+     */
     private String getStringColumnValue(ResultsTable resultsTable, String columnName, int rowIndex) {
         int columnIndex = resultsTable.getColumnIndex(columnName);
         return resultsTable.getStringValue(columnIndex, rowIndex);
     }
 
+    /**
+     * Accesses a results table and returns a single value as double
+     * @param resultsTable Fiji results table
+     * @param columnName String column name
+     * @param rowIndex int row index
+     * @return value as double
+     */
     private double getDoubleColumnValue(ResultsTable resultsTable, String columnName, int rowIndex) {
         int columnIndex = resultsTable.getColumnIndex(columnName);
         return resultsTable.getValueAsDouble(columnIndex, rowIndex);
     }
 
+    /**
+     * Accesses a results table and returns a single value as integer
+     * @param resultsTable Fiji results table
+     * @param columnName String column name
+     * @param rowIndex int row index
+     * @return value as integer
+     */
     private int getIntegerColumnValue(ResultsTable resultsTable, String columnName, int rowIndex) {
         int columnIndex = resultsTable.getColumnIndex(columnName);
         return (int) resultsTable.getValueAsDouble(columnIndex, rowIndex);
