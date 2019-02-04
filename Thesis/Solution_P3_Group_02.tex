@@ -50,8 +50,7 @@
 %##########################################################
 
 %opening
-%\title{Programming Project 03}
-\title{Work in Progress, NOT YET FINISHED}
+\title{Programming Project 03}
 \author{Francel Lamprecht, Christine Robinson, Regina Wehler}
 \date{Winter Semester 2018/19}
 
@@ -164,12 +163,35 @@ Data analysis was conducted in Jupyter Notebooks using several Python packages. 
 For this study, datasets of the Leaf Segmentation and Counting Challenges were used \citep{Minervini.2016}. The imaging data were manually annotated to provide ground truth information \citep{Scharr.2014}. The datasets contain images of greenhouse images with \textit{A.~thaliana} and \textit{N.~tabacum}. \textit{A.~thaliana} is a rosette plant, with the individual leaves being on separate, distinguishable stems. This characteristic of \textit{A.~thaliana} makes leaf separation from each other less complex.  Given that we were only exploring viable methods in this research area, \textit{A.~thaliana} was our chosen plant, as it gave us the opportunity to explore with different algorithms in an easier way than what the \textit{N.~tabacum} dataset would have allowed us to do. Since the datasets for 2014, 2015 and 2017 are nearly the same, only differing in the amount of provided meta data, datasets from a single year were used for analysis. 
 
 \section{Results}
-\subsection{Overview of the 2014 datasets}
+
+\subsection{Comparison of A1 and A2 datasets}
+%TODO should we skip this?
+\begin{figure}
+	\centering
+	\subfloat[A1 Dataset]{\includegraphics[width=.45\textwidth]{pic/A1-size}}
+	\qquad
+	\subfloat[A2 Dataset]{\includegraphics[width=.45\textwidth]{pic/A2-size}}
+	\caption{XXX}
+	\label{fig:A1-A2-size}
+\end{figure}
+
+\subsection{Comparison of leaf count to ground truth for the A1 and A2 datasets}
+
+\begin{figure}
+	\subfloat[A1 Dataset]{\includegraphics[scale=.5]{pic/A1-truth}}
+	\qquad
+	\subfloat[A2 Dataset]{\includegraphics[scale=.5]{pic/A2-truth}}
+	\caption{Comparison of the leaf count to ground truth. The ground truth was determined by manually annotation of images \citep{Scharr.2014}. The output of our approach for every single image was subtracted from the ground truth and plotted.}
+	\label{fig:truth}
+\end{figure}
+
+
+\subsection{Overview of the A2 dataset}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=13cm]{pic/overview}
-	\caption{Overview of correlations in the 2014 datasets shown in a pairplot matrix.}
+	\caption{Overview of pairwise correlations between the features size, roundness, average green brightness, feret-ratio, and width-to-height-ratio in the 2014 datasets shown in a pairplot matrix.}
 	\label{fig:overview}
 \end{figure}
 
@@ -181,7 +203,7 @@ For this study, datasets of the Leaf Segmentation and Counting Challenges were u
 	\subfloat[Size vs. Color]{\includegraphics[width=.45\textwidth]{pic/size-color}}
 	\qquad
 	\subfloat[Number of Leaves vs. Total Area]{\includegraphics[width=.45\textwidth]{pic/number-area}}
-	\caption{XXX}
+	\caption{Analyses of correlations shown in pairwise scatter plots with histograms along the x- and y-axes and pearson correlation coefficients.}
 	\label{fig:corr}
 \end{figure}
 
@@ -190,41 +212,11 @@ For this study, datasets of the Leaf Segmentation and Counting Challenges were u
 - Correlation of leaf number and total plant area
 
 
-\subsection{Comparison of A1 and A2 datasets}
-
-\begin{figure}
-	\centering
-	\subfloat[A1 Dataset]{\includegraphics[width=.45\textwidth]{pic/A1-size}}
-	\qquad
-	\subfloat[A2 Dataset]{\includegraphics[width=.45\textwidth]{pic/A2-size}}
-	\caption{XXX}
-	\label{fig:A1-A2-size}
-\end{figure}
-
-\subsection{Comparison of leaf count to ground truth}
-
-\begin{figure}
-	\subfloat[A1 Dataset]{\includegraphics[scale=.5]{pic/A1-truth}}
-	\qquad
-	\subfloat[A2 Dataset]{\includegraphics[scale=.5]{pic/A2-truth}}
-	\caption{XXX}
-	\label{fig:truth}
-\end{figure}
-
 \section{Discussion}
+\subsection{Challenges in the Identification of Plants}
+In the here suggested pipeline, the image was first segmented into plant and background using a trainable WEKA segmentation. The quality of the classification was depending on two parameters: the selection of images and the number of images and amount of pixel traces used for training. The more images and the more pixels used for training of the classifier, the larger will be the file size and the longer it will take to read in the file and to apply the classifier to images. Thus, a balance was required between number of labeled pixels and classification accuracy because with increasing number of labeled pixels the execution of the program requires more time. A compromise between a sufficient training subset and a reasonable file size was found by using six images (three of each dataset). In general, a diverse subset of images should be selected for training. During implementation, several subsets were considered. First, the training set contained an image with a mossy plant pot and the classifier was trained to recognize moss as background. It was not possible to successfully train the classifier with that training set. Either the moss was still recognized as plant or the moss was recognized as background but also substantial parts of plants were classified as background. Therefore, it was decided to focus on a sufficiently well classification of plants and the classifier was trained with a subset that contained images with red and black background, with or without water, with red marker tape, with small and big plants and with overlapping neighboring plants but not with moss.
 
-%TODO
-%TODO Francel: Maybe we should also include sub-headings in the discussion? I know it is not standard in a "normal" thesis, but maybe for this project's it might be a good idea. I don't mind either way... :) 
-%TODO Regina: sub-headings in the discussion chapter is standard. but it shouldn't be the same headings from another chapter (normally it's tempting to use the same heading from the results in the discussion). And I think that the explanation of our choice of measurements should go to the methodology chapter.**
-
-\subsection{Challenges in the Identification of Single Leaves}
-- quality of classification depends on the selection of images for training and on the selection of traces
-
-- need to find a balance between number of labeled pixels and classification accuracy because with increasing number of labeled pixels the reading of the classifier later requires more time
-
-- watershed is working best for circular objects, that's why it sometimes fails on leaves with long stems
-
-- detection and removal of outliers is difficult for very small plants -> with our pipeline we have lost very small plants (pixel number?)
+In this pipeline, outliers were removed using a median filter with a radius of 6 pixels. With this approach, outliers were successfully removed but the A2 dataset also contained some very small plants that got lost in this step. 
 
 \subsection{Object Analysis}
 Object analysis to be included in the generated Results Table are clearly formulated in the ImageJ documentation \citep{Ferreira.2012}. A decision that was needed to be made, was whether to take an object's position from the the top left appearing pixel or from the centroid. In this project we used the centroid to indicate the object's position, as by using the top left appearing pixel position has no advantage over the centroid. By using the centroid positions, we ensured that the position coordinates are more robust to possible rotations. If the top left appearing pixel was used, problems could arrive if the leaves were to be rotated. 
@@ -233,7 +225,19 @@ In  the Fiji Results Table, circularity and roundness are two similar measuremen
 
 After calculating both the width to height ratio and the Feret ratio for each leaf, it was found that although the two ratio's did render corresponding values in some instances, there were other instances where the ratio values differed significantly. Manual calculations were done (measuring the length and width of a leaf on-screen with a ruler) and it was found that in the cases where there was a difference between the ratio's, the Feret ratio was more accurate. This is because the bounding rectangle is not turned by Fiji according to the leaf's position, instead the bounding rectangle remains parallel to the image border.
 
+\subsection{Quality of the analysis of the A1 dataset}
+- bad quality --> high deviation from ground truth, see fig:moss for example
 
+- caused by unappropriate classifier in the first step
+
+- overcome this with classifier that takes other features e.g. granularity into account 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=13cm]{pic/moss}
+	\caption{Example of the classification of a mossy plant pot in comparison to ground truth. The moss was mainly incorrectly classified as plant.}
+	\label{fig:moss}
+\end{figure}
 
 \renewcommand\bibname{References} % necessarily before \bibliography{ref}, but not working in preamble
 \bibliographystyle{apalike} % for references chapter
