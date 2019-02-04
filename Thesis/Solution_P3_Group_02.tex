@@ -1,7 +1,7 @@
 \documentclass[paper=A4,bibliography=totocnumbered]{scrartcl}
 \setkomafont{disposition}{\normalcolor\bfseries} %in KOMA headings are default sans serif, with this patch with serifs see scrguide.pdf, 2010-09-14, page 108
 \usepackage[dvipsnames]{xcolor}
-\usepackage[latin1]{inputenc} % correct coding for windows e.g. with umlauts
+%\usepackage[latin1]{inputenc} % correct coding for windows e.g. with umlauts  ..... did not work with ö and è
 \usepackage[T1]{fontenc}
 \usepackage{paralist} % compactenum and compactitem
 \usepackage[pdftex]{graphicx} % required to insert figures
@@ -12,6 +12,7 @@
 \usepackage[round]{natbib} % http://merkel.zoneo.net/Latex/natbib.php for author-year citation with round brackets
 \usepackage{vmargin} % for margins, especially bottommargin smaller, alternative to DIV=12
 \setmarginsrb{35mm}{20mm}{25mm}{15mm}{12pt}{11mm}{0pt}{11mm}
+\usepackage[utf8]{inputenc} %correct coding for windows umlauts... now working with ö and è
 
 % math packages
 \usepackage{amsmath}
@@ -51,7 +52,7 @@
 
 %opening
 \title{Programming Project 03}
-\author{Francel Lamprecht, Christine Robinson, Regina Wehler}
+\author{Francèl Lamprecht, Christine Robinson, Regina Wehler}
 \date{Winter Semester 2018/19}
 
 \begin{document}
@@ -61,11 +62,17 @@
 \tableofcontents
 \clearpage
 \section{Introduction}
-Plant phenotyping is a research  area in the plant sciences that focuses on the quantitative measurement of both functional and structural properties of plants. During the last decade plant phenotyping evolved to non-destructive, image-analysis-based phenotyping. This computer driven approach allows the characterization of plants in a high-throughput manner \citep{Walter.2015}.
+Plant phenotyping is a research  area in the plant sciences that focuses on the quantitative measurement of both functional and structural properties of plants. The main bottleneck in plant research and breeding is the phenotyping capability. During the last decade plant phenotyping evolved to non-destructive, image-analysis-based phenotyping, which when requires allows for the tracking of plant development over a given time. This computer driven approach allows the characterization of plants in a high-throughput manner \citep{Walter.2015}.
+
+The recognition of objects, based on image analysis, consists of four sub-problems \citep{Adams.2018}: \par
+1) \textbf{Preprocessing} - Digital images are prone to noise and undesired artifacts, which can be removed by sensible preprocessing. \par
+2) \textbf{Segmentation} - A crucial step to ensure successful classification. Segmentation is used to assign a label to each pixel in an image, so that pixels with the same label will possess shared characteristics. \par
+3) \textbf{Feature Extraction} - Algorithms that will extract selected features from an image is applied during feature extraction. \par
+4)\textbf{Classification} - Each region identified by the feature extraction algorithm is evaluated for its characteristics. Based on the the classifier rating, the image areas may be assined to  a positive or negative class. By using clustering these class assignments can be achieved automatically. \par
 
 The focus of this plant phenotyping research project was on the processing, segmentation and classification of \textit{A.~thaliana}, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. \textit{A.~thaliana} is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. 
 
-The project was divided into two main parts:
+The goal of the project was to develop a simple and naïve approach towards plant classification by using top view photos of  \textit{A.~thaliana}. The project was divided into two main parts:
 a) Image Analysis with Fiji in Java
 b) Explorative Data Analysis with Python in Jupyter Notebook.
 
@@ -120,8 +127,8 @@ After an image was subjected to the aforementioned steps, the resulting watershe
 \item Bounding rectangle - This is the smallest possible rectangle that encloses the selection. It gives the X and Y coordinates in respect of the upper left corner of the rectangle, as well as the height and width, from which the width-to-height-ratio will be calculated.
 \item Shape descriptors - These descriptors are used to attain the roundness of each object.
 \item Feret's diameter - Can be used to find the longest distance between any two points on the selection boundary.
-\item Integrated density- Used to indicate the sum of the brightness, as it sums the values of the pixels in the image or selection
-\end{compactitem}
+\item Integrated density- Used to indicate the sum of the brightness, as it sums the values of the pixels in the image or selection.
+\end{compactitem} 
 
 Particles with a pixel size less than 70 were excluded from the "Analyze Particles" command. The value of 70 was established by trial and error, by inspecting the lines drawn by the watershed algorithm to separate objects.
 
@@ -153,8 +160,6 @@ As brightness values calculated from binary watershed images is insufficient for
 An additional requirement of the project was to include the width to height ratio. As this is not a built-in measurement option in Fiji, the width and the height that were included in the Results Table, as part of the "Bounding rectangle" measurement were extracted and the ratio was calculated, by dividing the leaf width by the leaf height. The calculated width to height ratio was added to the csv file to be available for further use.
 
 The Feret Ratio was additionally calculated from the minimum caliper diameter (MinFeret) and the maximum caliper (MaxFeret) values. These values are calculated as part of the Feret's diameter measurements. The ratio was calculated, by dividing MinFeret by MaxFeret, as another approach to get a width to height ratio overview for each leaf.
-
-
 
 \subsection{Explorative Data Analysis}
 Data analysis was conducted in Jupyter Notebooks using several Python packages. Data were handled with the python package pandas. For visual statistical analysis, the seaborn package was used. Numerical statistical analysis was mainly performed using the stats module from the python package scipy. For general plotting of graphs, the pyplot module from the python package matplotlib was used.
@@ -221,9 +226,9 @@ In this pipeline, outliers were removed using a median filter with a radius of 6
 \subsection{Object Analysis}
 Object analysis to be included in the generated Results Table are clearly formulated in the ImageJ documentation \citep{Ferreira.2012}. A decision that was needed to be made, was whether to take an object's position from the the top left appearing pixel or from the centroid. In this project we used the centroid to indicate the object's position, as by using the top left appearing pixel position has no advantage over the centroid. By using the centroid positions, we ensured that the position coordinates are more robust to possible rotations. If the top left appearing pixel was used, problems could arrive if the leaves were to be rotated. 
 
-In  the Fiji Results Table, circularity and roundness are two similar measurements. Circularity in ImageJ is calculated in such a way that it excludes local irregularities, therefore the roundness measurement which gives a value directly relative to the aspect ratio, was included in the csv file. 
+In  the Fiji Results Table, circularity and roundness are two similar measurements. Circularity in ImageJ is calculated in such a way that it excludes local irregularities, therefore the roundness measurement, which gives a value directly relative to the aspect ratio, was included in the csv file. 
 
-After calculating both the width to height ratio and the Feret ratio for each leaf, it was found that although the two ratio's did render corresponding values in some instances, there were other instances where the ratio values differed significantly. Manual calculations were done (measuring the length and width of a leaf on-screen with a ruler) and it was found that in the cases where there was a difference between the ratio's, the Feret ratio was more accurate. This is because the bounding rectangle is not turned by Fiji according to the leaf's position, instead the bounding rectangle remains parallel to the image border.
+After calculating both the width to height ratio and the Feret ratio for each leaf, it was found that although the two ratio's did render corresponding values in some instances, there were other instances where the ratio values differed significantly. Manual calculations were done (measuring the length and width of a leaf on-screen with a ruler) and it was found that in the cases where there was a difference between the ratios, the Feret ratio was more accurate. The reason is that the bounding rectangle is not turned by Fiji according to the leaf's position, instead the bounding rectangle remains parallel to the image border and is thus in certain cases a rough estimate of the approximate height and width. As previously discussed in the methodology section, the Feret's ratio is calculated from exact measurements and therefore leads to more precise results. 
 
 \subsection{Quality of the analysis of the A1 dataset}
 - bad quality --> high deviation from ground truth, see fig:moss for example
@@ -238,6 +243,14 @@ After calculating both the width to height ratio and the Feret ratio for each le
 	\caption{Example of the classification of a mossy plant pot in comparison to ground truth. The moss was mainly incorrectly classified as plant.}
 	\label{fig:moss}
 \end{figure}
+
+\section{Conclusion}
+The project's goal was met in that we did successfully implement a simple and naïve approach towards plant classification by using top view photos. By applying Trainable Weka Segmentation, with a FastRandomForest classifier, a plant was seperated from its background in simple cases. Leaf seperation and subsequent analysis of individual leaves were carried out successfully. 
+
+Through the application of various statistical functions in-depth analysis were performed and it was found that the FastRandomForest classifier (used with standard Fiji settings) was not able to successfully distinguish between leaves belonging to the plant and moss surrounding the plants. We concluded that this inabiltity of the classifier was due the classifier basing classification mostly on color. 
+
+To improve the performance of our classifier on the A1, mossy, dataset we suggest to in future make use of different hyperparameters, that can for example differentiate based on coarseness, as plant leaves have smoother appearance than moss. More detailed and sensible preprocessing to distinguish the moss as noise can be another viable option to consider in order to improve the classifier's accuracy.
+
 
 \renewcommand\bibname{References} % necessarily before \bibliography{ref}, but not working in preamble
 \bibliographystyle{apalike} % for references chapter
