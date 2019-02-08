@@ -84,7 +84,7 @@ The goal of the project was to develop a simple and naïve approach towards plan
 	\centering
 	\subfloat[Top-view image]{\includegraphics[height=.2\textheight]{pic/27_rgb}}
 	\qquad
-	\subfloat[Side-view image]{\includegraphics[height=.2\textwidth]{pic/rice}}
+	\subfloat[Side-view image]{\includegraphics[height=.2\textheight]{pic/rice}}
 	\caption[Measurement of plant's projected leaf area]{The measurement of plant's projected leaf area is conducted based on top-view images, in case of rosette plants like \textit{Arabidopsis thaliana} or \textit{Nicotiana tabacum}, or side-view images in shoot plants like \textit{Oryza sativa}.}
 	\label{fig:PLA}
 \end{figure}
@@ -92,19 +92,6 @@ The goal of the project was to develop a simple and naïve approach towards plan
 \clearpage
 \section{Methodology}
 Each image was processed in a consecutive series of algorithms and tools which are implemented as plugins in the Fiji distribution \citep{Schindelin.2012} of the open-source software ImageJ \citep{Rueden.2017}. The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two classes, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
-
-\begin{figure}
-	\centering
-	\subfloat[Input]{\includegraphics[width=.3\textwidth]{pic/27_rgb}}
-	\qquad
-	\subfloat[Classification]{\includegraphics[width=.3\textwidth]{pic/27_class}}
-	\qquad
-	\subfloat[Watershed]{\includegraphics[width=.3\textwidth]{pic/27_watershed}}
-	\qquad
-	\subfloat[Particle Analysis]{\includegraphics[width=.3\textwidth]{pic/27_greenPA}}
-	\caption[Image analysis pipeline]{The analysis of plant leaves is conducted in three steps. The RGB input image (a) is classified into plant and background by a trainable Weka segmentation classifier (b). Single leaf objects are identified by watershed segmentation (c). The binary mask is used to analyze properties in the split red, green and blue channel (d).}
-	\label{fig:pipeline}
-\end{figure}
 
 \subsection{Segmentation}
 The plant is separated from the background with the help of a trainable Weka segmentation classifier \citep{ArgandaCarreras.2017}. Weka provides a GUI to train machine learning algorithms to produce pixel-based segmentations. The user can add traces to classes and train the classifier with those. Afterwards, traces/regions of interest can be adjusted and the classifier can be re-trained to improve classification. Six representative pictures are selected from the 2017 data set for training (plant029, plant145 and plant159 from A1; plant032, plant034 and plant037 from A2). Pictures are chosen to cover the whole range of plant green shades and the range of background characteristics of the given data sets. The Weka Experimenter was used to assess the performance of different machine learning algorithms. Based on these results (table \ref{tab:weka}), FastRandomForest was used with default parameters as a classifier. By applying the trained classifier to the RGB input images, for each input image a binary classification image is obtained (figure \ref{fig:pipeline}-b). 
@@ -127,6 +114,19 @@ The plant is separated from the background with the help of a trainable Weka seg
 	\end{tabular}
 	\label{tab:weka}
 \end{table}
+
+\begin{figure}
+	\centering
+	\subfloat[Input]{\includegraphics[width=.3\textwidth]{pic/27_rgb}}
+	\qquad
+	\subfloat[Classification]{\includegraphics[width=.3\textwidth]{pic/27_class}}
+	\qquad
+	\subfloat[Watershed]{\includegraphics[width=.3\textwidth]{pic/27_watershed}}
+	\qquad
+	\subfloat[Particle Analysis]{\includegraphics[width=.3\textwidth]{pic/27_greenPA}}
+	\caption[Image analysis pipeline]{The analysis of plant leaves is conducted in three steps. The RGB input image (a) is classified into plant and background by a trainable Weka segmentation classifier (b). Single leaf objects are identified by watershed segmentation (c). The binary mask is used to analyze properties in the split red, green and blue channel (d).}
+	\label{fig:pipeline}
+\end{figure}
 
 \subsection{Objects recognition}
 A plant consists of leaves that are attached to each other. To be able to analyze leaves individually, they need to be separated. Here, the watershed algorithm was used to separate touching objects. Its implementation in Fiji is based on the algorithm described by \citet{Kunt.1990}. The algorithm first calculates an Euclidean distance map and determines center points as points which are, from a topological view, the ultimate eroded points, As the algorithm's name indicates, this topological map is "flooded" with water and at each collision of two "watersheds", a line separating two objects is drawn. Before watershed was applied, outliers were removed in both classes of the binary image by using the Fiji remove outliers function separately on each class. This function uses a median filter, for which the pixel radius was set to 6 and the threshold was set to 50. The output of the watershed algorithm is the binary image with added watershed lines (figure \ref{fig:pipeline}-c). 
@@ -248,7 +248,6 @@ The determined leaf characteristics were analyzed regarding correlations between
 
 In addition, a high, non-linear correlation between number of leaves and total plant area was shown in the data. This aligns with prior biological knowledge: a plant tends to sprout many small leaves early, which then grow in area over time.
 
-\clearpage
 \section{Conclusion}
 The project's goal was met in that we did successfully implement a simple and naïve approach towards plant classification by using top view photos. By applying Trainable Weka Segmentation, with a FastRandomForest classifier, a plant was separated from its background in simple cases. Leaf separation and subsequent analysis of individual leaves were carried out successfully. 
 
