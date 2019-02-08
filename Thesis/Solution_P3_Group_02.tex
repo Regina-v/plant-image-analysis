@@ -3,8 +3,10 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage[utf8]{inputenc} % correct coding for windows e.g. with umlauts
 \usepackage[T1]{fontenc}
+\usepackage[onehalfspacing]{setspace} % 1.5 spacing
 \usepackage{paralist} % compactenum and compactitem
 \usepackage[pdftex]{graphicx} % required to insert figures
+\usepackage{subfig} % divide figures into subfigures
 \usepackage{listings} % format code
 \lstset{escapeinside={<@}{@>}}
 \usepackage[margin=10pt,font=small,labelfont=bf,labelsep=endash,singlelinecheck=false,format=plain]{caption} % formatting of captions
@@ -23,7 +25,7 @@
 \newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
-\usepackage{subfig}
+
 \usepackage[hidelinks]{hyperref} % linked pdf, necessarily at the end of preamble!!!
 
 %##########################################################
@@ -61,8 +63,10 @@
 \tableofcontents
 \clearpage
 \section{Introduction}
-%TODO
-Plant phenotyping is a research  area in the plant sciences that focuses on the quantitative measurement of both functional and structural properties of plants. The main bottleneck in plant research and breeding is the phenotyping capability. During the last decade plant phenotyping evolved to non-destructive, image-analysis-based phenotyping, which then allows for the tracking of plant development over a given time. This computer driven approach allows the characterization of plants in a high-throughput manner \citep{Walter.2015}.
+A key discipline in plant research is the evaluation of plants response to different environmental conditions in order to infer functionality. To this end, phenotypes of different genotypes, i.e. different cultivars or mutants and wild type, are compared. In biological research that is mostly done by growing model plants such as \textit{Arabidopsis thaliana}, \textit{Nicotiana tabacum} or \textit{Oryza sativa} under controlled environmental conditions, followed by the assessment of the phenotypes in order to look into functioning. Previously, that was done by manually investigations which was labourious and time consuming. Necessary research to fulfill the upcoming agricultural needs to feed the world is restricted by the bottleneck which is created by manual plant phenotyping \citep{Minervini.2015}. Recently, more attention was paid to implement automatic image-based nondestructive approaches to acquire and analyze visual phenotypes of plants \citep{Scharr.2016}. This computer driven approach allows the characterization of plants in a high-throughput manner \citep{Walter.2015}.
+An important trait in crop breeding/research is yield which is directly correlated to plant mass. There are several ways to determine the plant mass, with the most simplest one, i.e. weighing the bio mass, being destructive and invasive. Therefore, non-invasive methods came up, such as measuring a plant's projected leaf area, i.e. counting the pixels that belong to plants in top-view images, in case of rosette plants like \textit{Arabidopsis thaliana} or \textit{Nicotiana tabacum} (figure \ref{fig:PLA}-a), or side-view images in shoot plants like \textit{Oryza sativa} (figure \ref{fig:PLA}-b). 
+
+This cannot be seen as an absolute measure but rather as a sufficiently well approximation. When measuring total plant area, the response to environmental conditions is rather slow as old, non-growing leaves are not distinguished from young, fast-growing leaves. To obtain better results with clearer details, it is preferable to do a single leaf segmentation of the plants \citep{Scharr.2016}. Approaching this task, several challenges have to be tackled. Plants are growing organisms which change over time. This results in huge differences in size and shape and smaller difference in shades of grey. Other challenges appear in the surrounding environmental conditions which might change over time. That includes e.g. different states of the soil which can be dry, wet or mossy, or different water levels in the background. 
 
 The recognition of objects, based on image analysis, consists of four sub-problems \citep{Adams.2018}: 
 \begin{enumerate}
@@ -72,12 +76,20 @@ The recognition of objects, based on image analysis, consists of four sub-proble
 \item \textbf{Classification:}  Each region identified by the feature extraction algorithm is evaluated for its characteristics. Based on the the classifier rating, the image areas may be assined to  a positive or negative class. By using clustering these class assignments can be achieved automatically. 
 \end{enumerate}
 
-The focus of this plant phenotyping research project was on the processing, segmentation and classification of \textit{A.~thaliana}, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. \textit{A.~thaliana} is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. 
+The focus of this plant phenotyping research project was on the processing, segmentation and classification of \textit{Arabidopsis thaliana}, to gain valuable insight on how the image-analysis-based phenotyping in the life sciences works. \textit{Arabidopsis thaliana} is often used as a model plant, as the plant is small in size, with a rapid life cycle of about six weeks \citep{Koornneef.2010}. 
 
-The goal of the project was to develop a simple and naïve approach towards plant classification by using top view photos of  \textit{A.~thaliana}. The project was divided into two main parts:
-a) Image Analysis with Fiji in Java
-b) Explorative Data Analysis with Python in Jupyter Notebook.
+The goal of the project was to develop a simple and naïve approach towards plant classification by using top view photos of \textit{Arabidopsis thaliana}. The project was divided into two main parts: a) Image Analysis with Fiji in Java; b) Explorative Data Analysis with Python in Jupyter Notebook.
 
+\begin{figure}
+	\centering
+	\subfloat[Top-view image]{\includegraphics[height=.2\textheight]{pic/27_rgb}}
+	\qquad
+	\subfloat[Side-view image]{\includegraphics[height=.2\textwidth]{pic/rice}}
+	\caption[Measurement of plant's projected leaf area]{The measurement of plant's projected leaf area is conducted based on top-view images, in case of rosette plants like \textit{Arabidopsis thaliana} or \textit{Nicotiana tabacum}, or side-view images in shoot plants like \textit{Oryza sativa}.}
+	\label{fig:PLA}
+\end{figure}
+
+\clearpage
 \section{Methodology}
 Each image was processed in a consecutive series of algorithms and tools which are implemented as plugins in the Fiji distribution \citep{Schindelin.2012} of the open-source software ImageJ \citep{Rueden.2017}. The image analysis approach consists of three main steps (figure \ref{fig:pipeline}). First, the input RGB input image is segmented into two classes, plant and background by a trainable Weka segmentation classifier. Second, the binary class output is used to identify single leaf objects by watershed segmentation. The resulting binary mask is utilized to analyze properties of the leaf objects in the single red, green and blue channel, respectively.
 
@@ -141,7 +153,7 @@ The generated Results Table results ("columns") that were included in the csv fi
 \begin{table}[htbp]
 	\centering
 	\caption{Measurement options and the corresponding value in the csv file.}
-	\begin{tabular}{lll}
+	\begin{tabular}{ll}
 		\toprule
 		Measurement option  & Corresponding value in the csv file \\
 		\midrule
@@ -167,8 +179,9 @@ The Feret Ratio was additionally calculated from the minimum caliper diameter (M
 Data analysis was conducted in Jupyter Notebooks using several Python packages. Data were handled with the python package pandas. For visual statistical analysis, the seaborn package was used. Numerical statistical analysis was mainly performed using the stats module from the python package scipy. For general plotting of graphs, the pyplot module from the python package matplotlib was used.
 
 \subsection{Data}
-For this study, datasets of the Leaf Segmentation and Counting Challenges were used \citep{Minervini.2016}. The imaging data were manually annotated to provide ground truth information \citep{Scharr.2014}. The datasets contain images of greenhouse images with \textit{A.~thaliana} and \textit{N.~tabacum}. \textit{A.~thaliana} is a rosette plant, with the individual leaves being on separate, distinguishable stems. This characteristic of \textit{A.~thaliana} makes leaf separation from each other less complex.  Given that we were only exploring viable methods in this research area, \textit{A.~thaliana} was our chosen plant, as it gave us the opportunity to explore with different algorithms in an easier way than what the \textit{N.~tabacum} dataset would have allowed us to do. Since the datasets for 2014, 2015 and 2017 are nearly the same, only differing in the amount of provided meta data, datasets from a single year were used for analysis. 
+For this study, datasets of the Leaf Segmentation and Counting Challenges were used \citep{Minervini.2016}. The imaging data were manually annotated to provide ground truth information \citep{Scharr.2014}. The datasets contain images of greenhouse images with \textit{Arabidopsis thaliana} and \textit{N.~tabacum}. \textit{Arabidopsis thaliana} is a rosette plant, with the individual leaves being on separate, distinguishable stems. This characteristic of \textit{Arabidopsis thaliana} makes leaf separation from each other less complex.  Given that we were only exploring viable methods in this research area, \textit{Arabidopsis thaliana} was our chosen plant, as it gave us the opportunity to explore with different algorithms in an easier way than what the \textit{N.~tabacum} dataset would have allowed us to do. Since the datasets for 2014, 2015 and 2017 are nearly the same, only differing in the amount of provided meta data, datasets from a single year were used for analysis. 
 
+\clearpage
 \section{Results}
 \subsection{Comparison of leaf count to ground truth for the A1 and A2 datasets}
 The rgb images from datasets A1 and A2 were analyzed with the previously described pipeline. Using tabular ground truth data supplied with the raw images, the output leaf count per plant was compared to the ground truth. The difference between ground truth and count was plotted for each image (figure \ref{fig:truth}). The largest difference in A1 were -21 leaves and in A2 6 leaves. For dataset A2, a root mean squared error of 2.74 was achieved, while for dataset A1, the error was 6.72. Since the results for the A1 dataset exhibited a huge deviation from ground truth, all further analyses were only done with the results from the A2 dataset.
@@ -184,7 +197,7 @@ The rgb images from datasets A1 and A2 were analyzed with the previously describ
 \subsection{Overview of the A2 dataset}
 To identify pairwise correlations between variables, a scatterplot matrix was plotted for the variables plant size, leaf roundness, average green brightness, feret ratio, and width to height ratio. Visual inspection indicated a linear correlation between roundness and feret ratio. 
  
-\begin{figure}[h]
+\begin{figure}
 	\centering
 	\includegraphics[width=13cm]{pic/overview}
 	\caption{Overview of pairwise correlations between the features size, roundness, average green brightness, feret-ratio, and width-to-height-ratio in the 2014 datasets shown in a pairplot matrix.}
@@ -192,9 +205,9 @@ To identify pairwise correlations between variables, a scatterplot matrix was pl
 \end{figure}
 
 \subsection{Analyses of correlations}
-Computation of Pearson correlation coefficients for several variables reinforced the previous visual inspection. Low correlation between size and roundness (pearson -0.23), and between size and color (pearson 0.18) were found (figure \ref{fig:corr}-A and -B). By contrast, the number of leaves correlated highly with the total plant area (pearson 0.86, \ref{fig:corr}-C). In particular, this correlation is not linear, but appears perhaps quadratic. Therefore, Spearman's rank correlation coefficient was calculated and the result was 0.94, indicating a high correlation. 
+Computation of Pearson correlation coefficients for several variables reinforced the previous visual inspection. Low correlation between size and roundness (pearson -0.23), and between size and color (pearson 0.18) were found (figure \ref{fig:corr}-a and -b). By contrast, the number of leaves correlated highly with the total plant area (pearson 0.86, \ref{fig:corr}-c). In particular, this correlation is not linear, but appears perhaps quadratic. Therefore, Spearman's rank correlation coefficient was calculated and the result was 0.94, indicating a high correlation. 
 
-\begin{figure}[h!]
+\begin{figure}
 	\centering
 	\subfloat[Size vs. Roundness]{\includegraphics[width=.45\textwidth]{pic/size-roundness}}
 	\qquad
@@ -205,6 +218,7 @@ Computation of Pearson correlation coefficients for several variables reinforced
 	\label{fig:corr}
 \end{figure}
 
+\clearpage
 \section{Discussion}
 \subsection{Challenges in the identification of plants}
 In the pipeline suggested here, the image was first segmented into plant and background using a trainable WEKA segmentation. The quality of the classification was depending on two parameters: the selection of images and the number of images and amount of pixel traces used for training. The more images and the more pixels used for training of the classifier, the larger will be the file size and the longer it will take to read in the file and to apply the classifier to images. Thus, a balance was required between number of labeled pixels and classification accuracy because with increasing number of labeled pixels the execution of the program requires more time. A compromise between a sufficient training subset and a reasonable file size was found by using six images (three of each dataset). In general, a diverse subset of images should be selected for training. During implementation, several subsets were considered. First, the training set contained an image with a mossy plant pot and the classifier was trained to recognize moss as background. It was not possible to successfully train the classifier with that training set. Either the moss was still recognized as plant or the moss was recognized as background but also substantial parts of plants were classified as background. Therefore, it was decided to focus on a sufficiently well classification of plants and the classifier was trained with a subset that contained images with red and black background, with or without water, with red marker tape, with small and big plants and with overlapping neighboring plants but not with moss.
@@ -234,6 +248,7 @@ The determined leaf characteristics were analyzed regarding correlations between
 
 In addition, a high, non-linear correlation between number of leaves and total plant area was shown in the data. This aligns with prior biological knowledge: a plant tends to sprout many small leaves early, which then grow in area over time.
 
+\clearpage
 \section{Conclusion}
 The project's goal was met in that we did successfully implement a simple and naïve approach towards plant classification by using top view photos. By applying Trainable Weka Segmentation, with a FastRandomForest classifier, a plant was separated from its background in simple cases. Leaf separation and subsequent analysis of individual leaves were carried out successfully. 
 
@@ -241,7 +256,7 @@ Through the application of various statistical functions in-depth analysis were 
 
 To improve the performance of our classifier on the A1, mossy, dataset we suggest to in future make use of different hyperparameters, that can for example differentiate based on coarseness, as plant leaves have smoother appearance than moss. More detailed and sensible preprocessing to distinguish the moss as noise can be another viable option to consider in order to improve the classifier's accuracy.
 
-
+\clearpage
 \renewcommand\bibname{References} % necessarily before \bibliography{ref}, but not working in preamble
 \bibliographystyle{apalike} % for references chapter
 \bibliography{ref}
